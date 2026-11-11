@@ -1,721 +1,986 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#f6f8fc">
-    <title>代码合并工坊 · HTML/CSS/JS 合并工具</title>
-    <style>
-        /* ===== 全局重置 ===== */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
 
-        html {
-            font-size: 16px;
-            -webkit-text-size-adjust: 100%;
+* {
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
-
         body {
-            background: #f6f8fc;
-            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-            min-height: 100vh;
-            min-height: 100dvh;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 1rem;
-            margin: 0;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1440px;
-            width: 100%;
-            background: #ffffff;
-            border-radius: 1.25rem;
-            box-shadow: 0 16px 32px -12px rgba(0, 20, 40, 0.15), 0 2px 8px rgba(0, 0, 0, 0.02);
-            padding: 1.5rem 1.25rem 1.25rem;
-            transition: all 0.2s ease;
-        }
-
-        /* ===== 头部 ===== */
-        .header {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            margin-bottom: 0.4rem;
-            flex-wrap: wrap;
-        }
-
-        .header svg {
-            width: 28px;
-            height: 28px;
-            color: #0f172a;
-            flex-shrink: 0;
-        }
-
-        h1 {
-            font-size: 1.35rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: #0b1e3a;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            flex-wrap: wrap;
-        }
-
-        .header-badge {
-            background: #eef2ff;
-            color: #4338ca;
-            font-size: 0.65rem;
-            font-weight: 600;
-            padding: 0.18rem 0.7rem;
-            border-radius: 40px;
-            letter-spacing: 0.02em;
-            text-transform: uppercase;
-            border: 1px solid #c7d2fe;
-            white-space: nowrap;
-        }
-
-        .subhead {
-            color: #475569;
-            font-size: 0.82rem;
-            margin-bottom: 1.25rem;
-            padding-left: 0.9rem;
-            border-left: 3px solid #cbd5e1;
-            line-height: 1.6;
-        }
-
-        /* ===== 三栏编辑器 ===== */
-        .editor-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .editor-card {
-            display: flex;
-            flex-direction: column;
-            background: #fbfdff;
-            border-radius: 1rem;
-            border: 1px solid #e9eef3;
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
             overflow: hidden;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            touch-action: none;
+        }
+        .pixel-font {
+            font-family: 'Press Start 2P', monospace;
+        }
+        
+        /* 冰块玻璃拟态主体 */
+        .ice-shell {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.25) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-top: 2px solid rgba(255, 255, 255, 0.9);
+            border-left: 2px solid rgba(255, 255, 255, 0.8);
+            border-right: 2px solid rgba(255, 255, 255, 0.3);
+            border-bottom: 4px solid rgba(186, 230, 253, 0.6);
+            box-shadow: 
+                0 30px 60px -12px rgba(14, 116, 144, 0.25),
+                inset 0 2px 6px rgba(255, 255, 255, 0.9),
+                inset 0 -8px 16px rgba(186, 230, 253, 0.5),
+                inset 0 0 40px rgba(224, 242, 254, 0.4);
         }
 
-        .editor-card:hover {
-            border-color: #cbd5e1;
-            box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.12);
+        /* 内部电路板隐约可见的效果 */
+        .circuit-pattern {
+            background-image: radial-gradient(rgba(14, 165, 233, 0.1) 2px, transparent 2px),
+                              linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px),
+                              linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px, 10px 10px, 10px 10px;
         }
 
-        .editor-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.65rem 0.9rem;
-            background: #ffffff;
-            border-bottom: 1px solid #edf2f7;
-            gap: 0.4rem;
-            flex-wrap: wrap;
+        /* 屏幕外框 */
+        .screen-bezel {
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                inset 0 3px 6px rgba(14, 116, 144, 0.15),
+                0 2px 4px rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
-        .editor-header h2 {
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: #1e293b;
-            white-space: nowrap;
-        }
-
-        .editor-header h2 svg {
-            width: 16px;
-            height: 16px;
-            color: #64748b;
-            flex-shrink: 0;
-        }
-
-        .badge {
-            font-size: 0.6rem;
-            font-weight: 500;
-            background: #f1f5f9;
-            color: #475569;
-            padding: 0.15rem 0.55rem;
-            border-radius: 40px;
-            letter-spacing: 0.02em;
-            border: 1px solid #e2e8f0;
-            white-space: nowrap;
-        }
-
-        .clear-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 3px;
-            background: none;
-            border: none;
-            font-size: 0.65rem;
-            font-weight: 500;
-            color: #64748b;
-            cursor: pointer;
-            padding: 0.25rem 0.5rem;
-            border-radius: 20px;
-            transition: background 0.15s, color 0.15s;
-            white-space: nowrap;
-        }
-
-        .clear-btn svg {
-            width: 11px;
-            height: 11px;
-            transition: color 0.15s;
-        }
-
-        .clear-btn:hover,
-        .clear-btn:active {
-            background: #fef2f2;
-            color: #b91c1c;
-        }
-
-        .clear-btn:hover svg,
-        .clear-btn:active svg {
-            color: #b91c1c;
-        }
-
-        textarea {
-            width: 100%;
-            min-height: 200px;
-            padding: 0.8rem;
-            border: none;
-            outline: none;
-            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', monospace;
-            font-size: 0.75rem;
-            line-height: 1.6;
-            background: #ffffff;
-            resize: vertical;
-            color: #0f172a;
-            border-bottom: 1px solid #edf2f7;
-            tab-size: 2;
-            -webkit-appearance: none;
-            appearance: none;
-            border-radius: 0;
-        }
-
-        textarea::placeholder {
-            color: #a0aec0;
-            font-family: 'Inter', sans-serif;
-            font-style: italic;
-            opacity: 0.8;
-            font-size: 0.72rem;
-        }
-
-        textarea:focus {
-            background: #fcfdff;
-        }
-
-        /* ===== 预览区 ===== */
-        .preview-section {
-            background: #f8fafc;
-            border-radius: 1rem;
-            padding: 1rem 1rem 1.25rem;
-            margin: 1rem 0 0.75rem;
-            border: 1px solid #e2e8f0;
-            transition: background 0.2s;
-        }
-
-        .preview-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.85rem;
-            flex-wrap: wrap;
-            gap: 0.6rem;
-        }
-
-        .preview-header h3 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .preview-header h3 svg {
-            width: 16px;
-            height: 16px;
-            color: #475569;
-        }
-
-        .preview-header h3 i {
-            font-style: normal;
-            font-size: 0.6rem;
-            background: #e2e8f0;
-            color: #334155;
-            padding: 0.12rem 0.6rem;
-            border-radius: 40px;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-            margin-left: 0.25rem;
-            white-space: nowrap;
-        }
-
-        .result-actions {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            border: none;
-            font-weight: 500;
-            font-size: 0.78rem;
-            padding: 0.55rem 1rem;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            background: #ffffff;
-            color: #1e293b;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
-            border: 1px solid #d1d9e6;
-            white-space: nowrap;
-            min-height: 36px;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .btn:active {
-            transform: scale(0.97);
-        }
-
-        .btn svg {
-            width: 14px;
-            height: 14px;
-            flex-shrink: 0;
-        }
-
-        .btn-primary {
+        /* 游戏屏幕 */
+        .game-screen {
             background: #0f172a;
-            color: white;
-            border: none;
-            box-shadow: 0 6px 14px -8px #0f172a;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
         }
 
-        .btn-primary:hover,
-        .btn-primary:active {
-            background: #1e293b;
+        /* 冰块十字键 */
+        .d-pad-container {
+            filter: drop-shadow(0 6px 8px rgba(14, 116, 144, 0.2));
+        }
+        .ice-dpad {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,1), inset 0 -2px 4px rgba(186, 230, 253, 0.8);
+            transition: all 0.08s ease;
+        }
+        .ice-dpad:active, .ice-dpad.active {
+            background: rgba(224, 242, 254, 0.9);
+            transform: scale(0.95);
+            box-shadow: inset 0 2px 5px rgba(14, 116, 144, 0.3);
         }
 
-        .btn-secondary:hover,
-        .btn-secondary:active {
-            background: #f1f5f9;
-            border-color: #94a3b8;
+        /* 糖果色果冻AB键 */
+        .btn-jelly-pink {
+            background: linear-gradient(145deg, rgba(251, 113, 133, 0.85), rgba(225, 29, 72, 0.75));
+            box-shadow: 
+                0 6px 0 rgba(190, 18, 60, 0.6),
+                0 8px 12px rgba(225, 29, 72, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 228, 230, 0.6);
+            backdrop-filter: blur(4px);
+            transition: all 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-jelly-pink:active, .btn-jelly-pink.active {
+            transform: translateY(5px);
+            box-shadow: 
+                0 1px 0 rgba(190, 18, 60, 0.6),
+                0 2px 4px rgba(225, 29, 72, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.6);
         }
 
-        .btn-copy {
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
+        .btn-jelly-cyan {
+            background: linear-gradient(145deg, rgba(56, 189, 248, 0.85), rgba(2, 132, 199, 0.75));
+            box-shadow: 
+                0 6px 0 rgba(3, 105, 161, 0.6),
+                0 8px 12px rgba(2, 132, 199, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(224, 242, 254, 0.6);
+            backdrop-filter: blur(4px);
+            transition: all 0.08s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-jelly-cyan:active, .btn-jelly-cyan.active {
+            transform: translateY(5px);
+            box-shadow: 
+                0 1px 0 rgba(3, 105, 161, 0.6),
+                0 2px 4px rgba(2, 132, 199, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.6);
         }
 
-        .btn-copy:hover,
-        .btn-copy:active {
-            background: #f0f9ff;
-            border-color: #3b82f6;
-            color: #1e40af;
+        /* 功能小胶囊键 */
+        .pill-btn {
+            background: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 3px 0 rgba(148, 163, 184, 0.5), 0 4px 6px rgba(0,0,0,0.05), inset 0 1px 2px white;
+            border: 1px solid rgba(255,255,255,0.8);
+            transition: all 0.08s;
+        }
+        .pill-btn:active, .pill-btn.active {
+            transform: translateY(3px);
+            box-shadow: 0 0px 0 rgba(148, 163, 184, 0.5), inset 0 1px 2px rgba(0,0,0,0.1);
         }
 
-        .btn-copy:hover svg,
-        .btn-copy:active svg {
-            color: #1e40af;
+        /* 装饰背景气泡 */
+        .bg-bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1));
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
+            backdrop-filter: blur(2px);
+            z-index: 0;
+            animation: float 8s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        /* 扫描线效果 */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0, 0, 0, 0.15) 50%,
+                rgba(0, 0, 0, 0.15)
+            );
+            background-size: 100% 4px;
         }
 
-        .preview-frame {
-            background: white;
-            border-radius: 0.75rem;
-            padding: 0.75rem;
-            border: 1px solid #e2e8f0;
-            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.02);
-            overflow: auto;
-            max-height: 360px;
-        }
+</style></head><body>
 
-        #mergedPreview {
-            width: 100%;
-            border: none;
-            background: transparent;
-            font-family: 'JetBrains Mono', 'Fira Code', monospace;
-            font-size: 0.72rem;
-            line-height: 1.6;
-            white-space: pre-wrap;
-            word-break: break-word;
-            color: #0f172a;
-            max-height: 320px;
-            overflow-y: auto;
-            margin: 0;
-            padding: 0.2rem;
-            resize: vertical;
-            min-height: 180px;
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-            border-radius: 0;
-        }
+<script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
-        .footer-note {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.7rem;
-            color: #64748b;
-            margin-top: 0.75rem;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
+<!-- 背景装饰冰块/气泡 -->
+    <div class="bg-bubble w-64 h-64 top-[-5%] left-[10%]"></div>
+    <div class="bg-bubble w-48 h-48 bottom-[5%] right-[12%]" style="animation-delay: -2s;"></div>
+    <div class="bg-bubble w-32 h-32 top-[20%] right-[20%]" style="animation-delay: -4s;"></div>
+    <div class="bg-bubble w-24 h-24 bottom-[15%] left-[20%]" style="animation-delay: -6s;"></div>
 
-        .status-toast {
-            font-size: 0.75rem;
-            color: #0f172a;
-            background: #dcfce7;
-            padding: 0.28rem 0.9rem;
-            border-radius: 40px;
-            transition: opacity 0.3s;
-            opacity: 0;
-            pointer-events: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            white-space: nowrap;
-        }
+    <!-- 游戏机本体 -->
+    <div class="ice-shell circuit-pattern relative z-10 w-[92vw] max-w-[380px] h-[88vh] max-h-[660px] rounded-[42px] rounded-br-[75px] p-6 flex flex-col justify-between">
+        
+        <!-- 顶部机身螺丝与高光装饰 -->
+        <div class="absolute top-4 left-6 w-3 h-3 rounded-full border border-sky-200/60 bg-white/30 shadow-inner flex items-center justify-center"><div class="w-2 h-[1px] bg-sky-300/60 rotate-45"></div></div>
+        <div class="absolute top-4 right-6 w-3 h-3 rounded-full border border-sky-200/60 bg-white/30 shadow-inner flex items-center justify-center"><div class="w-2 h-[1px] bg-sky-300/60 -rotate-12"></div></div>
+        
+        <!-- 顶部凹槽线 -->
+        <div class="w-1/2 h-1.5 mx-auto bg-white/40 rounded-full shadow-inner mb-1"></div>
 
-        .status-toast svg {
-            width: 13px;
-            height: 13px;
-            flex-shrink: 0;
-        }
-
-        .status-toast.show {
-            opacity: 1;
-        }
-
-        /* ===== 响应式 ===== */
-        @media (max-width: 960px) {
-            .editor-grid {
-                grid-template-columns: 1fr;
-                gap: 0.85rem;
-            }
-            textarea {
-                min-height: 160px;
-            }
-            .container {
-                padding: 1.25rem 1rem 1rem;
-            }
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 0.6rem;
-                align-items: stretch;
-            }
-            .container {
-                padding: 1rem 0.85rem 0.85rem;
-                border-radius: 1rem;
-            }
-            .header svg {
-                width: 24px;
-                height: 24px;
-            }
-            h1 {
-                font-size: 1.15rem;
-            }
-            .header-badge {
-                font-size: 0.55rem;
-                padding: 0.12rem 0.55rem;
-            }
-            .subhead {
-                font-size: 0.75rem;
-                margin-bottom: 1rem;
-                padding-left: 0.7rem;
-            }
-            .editor-header {
-                padding: 0.55rem 0.75rem;
-            }
-            .editor-header h2 {
-                font-size: 0.78rem;
-            }
-            .editor-header h2 svg {
-                width: 14px;
-                height: 14px;
-            }
-            .badge {
-                font-size: 0.55rem;
-                padding: 0.12rem 0.5rem;
-            }
-            textarea {
-                min-height: 140px;
-                font-size: 0.72rem;
-                padding: 0.7rem;
-            }
-            textarea::placeholder {
-                font-size: 0.68rem;
-            }
-            .preview-section {
-                padding: 0.85rem 0.75rem 1rem;
-            }
-            .preview-header h3 {
-                font-size: 0.82rem;
-            }
-            .preview-header h3 svg {
-                width: 14px;
-                height: 14px;
-            }
-            .preview-header h3 i {
-                font-size: 0.55rem;
-                padding: 0.1rem 0.5rem;
-            }
-            .result-actions {
-                width: 100%;
-                gap: 0.4rem;
-            }
-            .btn {
-                flex: 1;
-                justify-content: center;
-                padding: 0.5rem 0.6rem;
-                font-size: 0.7rem;
-                min-height: 34px;
-                border-radius: 30px;
-            }
-            .btn svg {
-                width: 12px;
-                height: 12px;
-            }
-            #mergedPreview {
-                font-size: 0.68rem;
-                min-height: 150px;
-                max-height: 260px;
-            }
-            .preview-frame {
-                max-height: 300px;
-                padding: 0.6rem;
-            }
-            .footer-note {
-                font-size: 0.65rem;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.4rem;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .btn {
-                font-size: 0.65rem;
-                padding: 0.45rem 0.4rem;
-            }
-            .btn svg {
-                width: 11px;
-                height: 11px;
-            }
-            .editor-header h2 {
-                font-size: 0.72rem;
-            }
-            h1 {
-                font-size: 1rem;
-            }
-        }
-
-        /* 滚动条美化 */
-        textarea::-webkit-scrollbar,
-        #mergedPreview::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-
-        textarea::-webkit-scrollbar-track,
-        #mergedPreview::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        textarea::-webkit-scrollbar-thumb,
-        #mergedPreview::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-
-        textarea::-webkit-scrollbar-thumb:hover,
-        #mergedPreview::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- 头部 -->
-        <div class="header">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
-                <path d="M14 2v6h6" />
-                <path d="M12 18v-4" />
-                <path d="M9 14l3 3 3-3" />
-            </svg>
-            <h1>
-                代码合并工坊
-                <span class="header-badge">HTML · CSS · JS</span>
-            </h1>
-        </div>
-        <p class="subhead">
-            将三部分代码粘贴到下方对应区域，实时生成完整页面。支持复制与下载，一键交付单文件。
-        </p>
-
-        <!-- 三栏编辑器 -->
-        <div class="editor-grid">
-            <!-- HTML -->
-            <div class="editor-card">
-                <div class="editor-header">
-                    <h2>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="16 18 22 12 16 6" />
-                            <polyline points="8 6 2 12 8 18" />
-                        </svg>
-                        HTML
-                    </h2>
-                    <div style="display: flex; align-items: center; gap: 0.3rem;">
-                        <span class="badge">body 内</span>
-                        <button class="clear-btn" id="clearHtmlBtn" title="清空 HTML 内容">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 6h18" />
-                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                                <line x1="10" y1="11" x2="10" y2="17" />
-                                <line x1="14" y1="11" x2="14" y2="17" />
-                            </svg>
-                            清空
-                        </button>
-                    </div>
+        <!-- 屏幕区域 -->
+        <div class="screen-bezel w-full h-[46%] rounded-[24px] rounded-br-[42px] p-4 flex flex-col relative">
+            <!-- 电源指示灯与品牌 -->
+            <div class="flex justify-between items-center mb-1.5 px-1">
+                <div class="flex items-center space-x-1.5">
+                    <div id="power-led" class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] transition-colors duration-300"></div>
+                    <span class="text-[9px] font-bold tracking-widest text-sky-900/50">BATTERY</span>
                 </div>
-                <textarea id="htmlInput" placeholder="<div>Hello World</div>&#10;<p>把 HTML 结构放在这里</p>" spellcheck="false" autocapitalize="off" autocorrect="off"></textarea>
+                <span class="text-[10px] font-bold tracking-wider text-sky-800/60 italic">ICE POCKET</span>
             </div>
 
-            <!-- CSS -->
-            <div class="editor-card">
-                <div class="editor-header">
-                    <h2>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2v20" />
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                        </svg>
-                        CSS
-                    </h2>
-                    <div style="display: flex; align-items: center; gap: 0.3rem;">
-                        <span class="badge">style 内</span>
-                        <button class="clear-btn" id="clearCssBtn" title="清空 CSS 内容">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 6h18" />
-                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                                <line x1="10" y1="11" x2="10" y2="17" />
-                                <line x1="14" y1="11" x2="14" y2="17" />
-                            </svg>
-                            清空
-                        </button>
-                    </div>
-                </div>
-                <textarea id="cssInput" placeholder="body { background: #f0f9ff; }&#10;h1 { color: navy; }" spellcheck="false" autocapitalize="off" autocorrect="off"></textarea>
+            <!-- 画布容器 -->
+            <div class="game-screen w-full flex-1 rounded-[12px] relative overflow-hidden">
+                <canvas id="gameCanvas" class="w-full h-full block"></canvas>
+                <div class="scanlines absolute inset-0 pointer-events-none"></div>
+                <!-- 屏幕玻璃反光 -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/15 pointer-events-none"></div>
             </div>
 
-            <!-- JavaScript -->
-            <div class="editor-card">
-                <div class="editor-header">
-                    <h2>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
-                            <path d="M14 2v6h6" />
-                            <path d="M12 18v-4" />
-                            <path d="M9 14l3 3 3-3" />
-                        </svg>
-                        JavaScript
-                    </h2>
-                    <div style="display: flex; align-items: center; gap: 0.3rem;">
-                        <span class="badge">script 内</span>
-                        <button class="clear-btn" id="clearJsBtn" title="清空 JavaScript 内容">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M3 6h18" />
-                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
-                                <line x1="10" y1="11" x2="10" y2="17" />
-                                <line x1="14" y1="11" x2="14" y2="17" />
-                            </svg>
-                            清空
-                        </button>
-                    </div>
-                </div>
-                <textarea id="jsInput" placeholder="console.log('Hello from JavaScript');&#10;document.body.style.fontFamily = 'system-ui';" spellcheck="false" autocapitalize="off" autocorrect="off"></textarea>
+            <!-- 底部Logo -->
+            <div class="text-center mt-2">
+                <span class="text-xs font-extrabold tracking-[0.25em] text-sky-950/40 bg-white/40 px-3 py-0.5 rounded-full shadow-sm border border-white/50">NINTENDO<span class="text-rose-400/70">★</span>ICE</span>
             </div>
         </div>
 
-        <!-- 合并预览与操作 -->
-        <div class="preview-section">
-            <div class="preview-header">
-                <h3>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                        <line x1="8" y1="21" x2="16" y2="21" />
-                        <line x1="12" y1="17" x2="12" y2="21" />
-                    </svg>
-                    合并预览
-                    <i>完整 HTML</i>
-                </h3>
-                <div class="result-actions">
-                    <button class="btn btn-secondary" id="refreshBtn" title="根据当前输入刷新预览">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="23 4 23 10 17 10" />
-                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
-                        </svg>
-                        刷新
+        <!-- 操控区域 (十字键 + AB键) -->
+        <div class="flex justify-between items-center px-2 my-auto pt-2">
+            
+            <!-- 十字键 (D-Pad) -->
+            <div class="relative w-32 h-32 d-pad-container flex items-center justify-center">
+                <!-- 中枢遮罩，消除拼接缝隙 -->
+                <div class="absolute w-10 h-10 bg-[#eef8ff] z-10 pointer-events-none flex items-center justify-center">
+                    <div class="w-5 h-5 rounded-full bg-sky-100/80 shadow-inner border border-white"></div>
+                </div>
+                
+                <!-- 上 -->
+                <button id="btn-up" data-key="UP" class="ice-dpad absolute top-0 w-10 h-12 rounded-t-[10px] z-0 flex justify-center pt-2 active:pt-2.5">
+                    <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[8px] border-b-sky-400/70"></div>
+                </button>
+                <!-- 下 -->
+                <button id="btn-down" data-key="DOWN" class="ice-dpad absolute bottom-0 w-10 h-12 rounded-b-[10px] z-0 flex justify-center items-end pb-2 active:pb-1.5">
+                    <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-sky-400/70"></div>
+                </button>
+                <!-- 左 -->
+                <button id="btn-left" data-key="LEFT" class="ice-dpad absolute left-0 w-12 h-10 rounded-l-[10px] z-0 flex items-center pl-2 active:pl-2.5">
+                    <div class="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[8px] border-r-sky-400/70"></div>
+                </button>
+                <!-- 右 -->
+                <button id="btn-right" data-key="RIGHT" class="ice-dpad absolute right-0 w-12 h-10 rounded-r-[10px] z-0 flex items-center justify-end pr-2 active:pr-1.5">
+                    <div class="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[8px] border-l-sky-400/70"></div>
+                </button>
+            </div>
+
+            <!-- AB 键 (倾斜排列) -->
+            <div class="relative w-32 h-24 flex items-center justify-center -rotate-[24deg] bg-white/20 rounded-full p-2 shadow-inner border border-white/40">
+                <!-- B 键 -->
+                <div class="flex flex-col items-center mr-4 mt-2">
+                    <button id="btn-b" data-key="B" class="btn-jelly-cyan w-12 h-12 rounded-full flex items-center justify-center relative overflow-hidden">
+                        <!-- 果冻高光 -->
+                        <div class="absolute top-1.5 left-2 w-4 h-2 bg-white/70 rounded-full rotate-[-30deg]"></div>
                     </button>
-                    <button class="btn btn-copy" id="copyBtn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                        </svg>
-                        复制
-                    </button>
-                    <button class="btn btn-primary" id="downloadBtn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                            <polyline points="7 10 12 15 17 10" />
-                            <line x1="12" y1="15" x2="12" y2="3" />
-                        </svg>
-                        下载
-                    </button>
+                    <span class="text-xs font-bold text-sky-900/60 mt-2 tracking-wider rotate-[24deg]">B</span>
                 </div>
-            </div>
-            <div class="preview-frame">
-                <textarea id="mergedPreview" readonly placeholder="合并后的完整 HTML 代码会显示在这里…" spellcheck="false"></textarea>
+                <!-- A 键 -->
+                <div class="flex flex-col items-center mb-2">
+                    <button id="btn-a" data-key="A" class="btn-jelly-pink w-12 h-12 rounded-full flex items-center justify-center relative overflow-hidden">
+                        <!-- 果冻高光 -->
+                        <div class="absolute top-1.5 left-2 w-4 h-2 bg-white/70 rounded-full rotate-[-30deg]"></div>
+                    </button>
+                    <span class="text-xs font-bold text-sky-900/60 mt-2 tracking-wider rotate-[24deg]">A</span>
+                </div>
             </div>
         </div>
 
-        <div class="footer-note">
-            <span id="statusMessage" class="status-toast">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12" />
-                </svg>
-                <span id="statusText">就绪</span>
-            </span>
-            <span>实时合并 · 专业输出 · 单文件交付</span>
+        <!-- 底部功能键与扬声器 -->
+        <div class="relative flex justify-center items-end pb-1 pt-2">
+            <!-- SELECT / START -->
+            <div class="flex space-x-6">
+                <div class="flex flex-col items-center">
+                    <button id="btn-select" data-key="SELECT" class="pill-btn w-10 h-3.5 rounded-full transform -rotate-[24deg]"></button>
+                    <span class="text-[9px] font-bold tracking-widest text-sky-900/50 mt-2">SOUND</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <button id="btn-start" data-key="START" class="pill-btn w-10 h-3.5 rounded-full transform -rotate-[24deg]"></button>
+                    <span class="text-[9px] font-bold tracking-widest text-sky-900/50 mt-2">START</span>
+                </div>
+            </div>
+
+            <!-- 右下角扬声器开孔 -->
+            <div class="absolute right-1 bottom-1 flex space-x-1.5 -rotate-[24deg]">
+                <div class="w-1.5 h-7 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
+                <div class="w-1.5 h-8 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
+                <div class="w-1.5 h-8 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
+                <div class="w-1.5 h-6 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
+            </div>
         </div>
+
+        <!-- 底部机身螺丝 -->
+        <div class="absolute bottom-4 left-6 w-3 h-3 rounded-full border border-sky-200/60 bg-white/30 shadow-inner flex items-center justify-center"><div class="w-2 h-[1px] bg-sky-300/60 rotate-90"></div></div>
     </div>
 
-    <!-- 引入 app.js -->
-    <script src="app.js"></script>
-</body>
-</html>
+    <!-- 电脑端操作提示 -->
+    <div class="hidden md:flex fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/60 text-sky-900/70 text-xs space-x-4 shadow-sm z-20">
+        <span><b>方向键 / WASD</b>: 移动</span>
+        <span><b>J / Z / 空格</b>: A键 (跳跃/确认)</span>
+        <span><b>K / X / Shift</b>: B键 (冲刺)</span>
+        <span><b>Enter</b>: 暂停</span>
+    </div>
+
+<script>
+
+/**
+         * 1. 音效合成器 (Web Audio API 8-bit 冰晶音效)
+         */
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+            }
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+            toggleMute() {
+                this.muted = !this.muted;
+                const led = document.getElementById('power-led');
+                if(this.muted) {
+                    led.className = "w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]";
+                } else {
+                    led.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]";
+                    this.playCoin();
+                }
+            }
+            playJump() {
+                if (this.muted || !this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.12);
+                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.12);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.12);
+            }
+            playDash() {
+                if (this.muted || !this.ctx) return;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + 0.15);
+            }
+            playCoin() {
+                if (this.muted || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(987.77, now); // B5
+                osc.frequency.setValueAtTime(1318.51, now + 0.07); // E6
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.35);
+            }
+            playDead() {
+                if (this.muted || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(300, now);
+                osc.frequency.linearRampToValueAtTime(100, now + 0.4);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.4);
+            }
+        }
+
+        const sfx = new SoundFX();
+
+        /**
+         * 2. 游戏引擎与逻辑：《冰晶企鹅大冒险》(Frosty Climb)
+         * 玩法：控制可爱的圆润小冰灵不断向上跳跃，B键冲刺，收集星星，脚下的深渊会不断上升！
+         */
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // 固定内部渲染分辨率，保持像素/复古精致感
+        const GW = 240;
+        const GH = 200;
+        canvas.width = GW;
+        canvas.height = GH;
+
+        // 输入状态管理
+        const keys = { UP: false, DOWN: false, LEFT: false, RIGHT: false, A: false, B: false };
+        const justPressed = { A: false, B: false, START: false, SELECT: false };
+
+        // 游戏全局变量
+        let gameState = 'TITLE'; // TITLE, PLAY, PAUSE, OVER
+        let score = 0;
+        let highScore = localStorage.getItem('ice_pocket_hi') || 0;
+        let cameraY = 0;
+        let frameCount = 0;
+
+        // 实体对象
+        let player;
+        let platforms = [];
+        let stars = [];
+        let particles = [];
+        let bgSnow = [];
+
+        // 初始化背景雪花
+        for(let i=0; i<25; i++) {
+            bgSnow.push({
+                x: Math.random() * GW,
+                y: Math.random() * GH,
+                r: Math.random() * 1.5 + 0.5,
+                s: Math.random() * 0.5 + 0.2
+            });
+        }
+
+        class Player {
+            constructor() {
+                this.w = 14;
+                this.h = 14;
+                this.x = GW / 2 - this.w / 2;
+                this.y = GH - 40;
+                this.vx = 0;
+                this.vy = 0;
+                this.grounded = false;
+                this.dashCool = 0;
+                this.dashTime = 0;
+                this.facing = 1; // 1 right, -1 left
+                // 动画形变参数 (挤压与拉伸)
+                this.scaleX = 1;
+                this.scaleY = 1;
+            }
+
+            update() {
+                // 左右移动
+                const accel = this.grounded ? 0.5 : 0.3;
+                const maxSpeed = 2.6;
+                
+                if (this.dashTime <= 0) {
+                    if (keys.LEFT) {
+                        this.vx = Math.max(this.vx - accel, -maxSpeed);
+                        this.facing = -1;
+                    } else if (keys.RIGHT) {
+                        this.vx = Math.min(this.vx + accel, maxSpeed);
+                        this.facing = 1;
+                    } else {
+                        this.vx *= (this.grounded ? 0.8 : 0.92);
+                        if (Math.abs(this.vx) < 0.05) this.vx = 0;
+                    }
+                }
+
+                // 跳跃 (A键 或 UP键)
+                if ((justPressed.A || keys.UP) && this.grounded) {
+                    this.vy = -5.4;
+                    this.grounded = false;
+                    this.scaleX = 0.7;
+                    this.scaleY = 1.35;
+                    sfx.playJump();
+                    createParticles(this.x + this.w/2, this.y + this.h, 5, '#e0f2fe');
+                }
+
+                // 冲刺 (B键) - 炫酷位移
+                if (this.dashCool > 0) this.dashCool--;
+                if (justPressed.B && this.dashCool === 0 && this.dashTime <= 0) {
+                    this.dashTime = 8;
+                    this.dashCool = 45;
+                    this.vx = this.facing * 5.5;
+                    this.vy = -1.2; // 略微浮空
+                    this.scaleX = 1.4;
+                    this.scaleY = 0.6;
+                    sfx.playDash();
+                    createParticles(this.x + this.w/2, this.y + this.h/2, 8, '#38bdf8');
+                }
+
+                if (this.dashTime > 0) {
+                    this.dashTime--;
+                    // 冲刺残影粒子
+                    particles.push({
+                        x: this.x + this.w/2, y: this.y + this.h/2,
+                        vx: 0, vy: 0, r: 5, life: 8, maxLife: 8, color: 'rgba(56, 189, 248, 0.5)'
+                    });
+                } else {
+                    // 重力
+                    this.vy += 0.24;
+                    if (this.vy > 6) this.vy = 6;
+                }
+
+                // 应用速度
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // 屏幕左右穿墙 (吃豆人式循环)
+                if (this.x > GW) this.x = -this.w;
+                if (this.x + this.w < 0) this.x = GW;
+
+                // 恢复形变
+                this.scaleX += (1 - this.scaleX) * 0.2;
+                this.scaleY += (1 - this.scaleY) * 0.2;
+
+                // 平台碰撞检测 (仅在下落时检测)
+                this.grounded = false;
+                if (this.vy >= 0) {
+                    for (let p of platforms) {
+                        if (p.broken) continue;
+                        if (this.x + this.w > p.x + 2 && 
+                            this.x < p.x + p.w - 2 &&
+                            this.y + this.h >= p.y && 
+                            this.y + this.h <= p.y + p.h + this.vy + 2) {
+                            
+                            this.y = p.y - this.h;
+                            this.vy = 0;
+                            this.grounded = true;
+                            
+                            // 落地挤压动画
+                            if(this.scaleY > 1.05) {
+                                this.scaleX = 1.25;
+                                this.scaleY = 0.75;
+                            }
+
+                            // 跟随移动平台
+                            if (p.type === 'MOVE') {
+                                this.x += p.vx;
+                            }
+                            // 碎冰平台触发
+                            if (p.type === 'BREAK') {
+                                p.timer++;
+                                if (p.timer > 25) {
+                                    p.broken = true;
+                                    createParticles(p.x + p.w/2, p.y, 10, '#bae6fd');
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            draw() {
+                ctx.save();
+                const cx = this.x + this.w / 2;
+                const cy = this.y - cameraY + this.h; // 以底部为中心缩放
+                ctx.translate(cx, cy);
+                ctx.scale(this.scaleX, this.scaleY);
+
+                // 绘制可爱冰精灵身体 (圆角矩形)
+                ctx.fillStyle = this.dashCool > 0 && this.dashTime <= 0 ? '#bae6fd' : '#ffffff';
+                ctx.beginPath();
+                ctx.roundRect(-this.w/2, -this.h, this.w, this.h, [6, 6, 3, 3]);
+                ctx.fill();
+
+                // 冰精灵内部腮红与眼睛
+                const eyeOffset = this.facing * 2.5;
+                ctx.fillStyle = '#0f172a';
+                ctx.fillRect(-3 + eyeOffset, -this.h + 5, 2, 3);
+                ctx.fillRect(2 + eyeOffset, -this.h + 5, 2, 3);
+
+                // 粉色腮红
+                ctx.fillStyle = '#fb7185';
+                ctx.fillRect(-5 + eyeOffset, -this.h + 8, 2, 1.5);
+                ctx.fillRect(4 + eyeOffset, -this.h + 8, 2, 1.5);
+
+                // 头顶小冰晶呆毛
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath();
+                ctx.arc(0, -this.h - 2, 2, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.restore();
+            }
+        }
+
+        function createParticles(x, y, count, color) {
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: (Math.random() - 0.5) * 3 - 1,
+                    r: Math.random() * 2 + 1,
+                    life: 15 + Math.random() * 10,
+                    maxLife: 25,
+                    color: color
+                });
+            }
+        }
+
+        function spawnPlatform(y, isFirst = false) {
+            const w = isFirst ? GW - 40 : Math.max(36, 65 - Math.floor(score / 150));
+            const x = isFirst ? 20 : Math.random() * (GW - w - 10) + 5;
+            
+            let type = 'NORMAL';
+            if (!isFirst && score > 50) {
+                const rand = Math.random();
+                if (rand < 0.25) type = 'MOVE';
+                else if (rand < 0.45) type = 'BREAK';
+            }
+
+            platforms.push({
+                x, y, w, h: 7,
+                type: type,
+                vx: type === 'MOVE' ? (Math.random() > 0.5 ? 1 : -1) * (0.8 + Math.random()*0.5) : 0,
+                timer: 0,
+                broken: false
+            });
+
+            // 伴随生成收集物 (冰晶星星)
+            if (!isFirst && Math.random() < 0.45) {
+                stars.push({
+                    x: x + w / 2,
+                    y: y - 16,
+                    r: 4,
+                    collected: false,
+                    bobOffset: Math.random() * Math.PI * 2
+                });
+            }
+        }
+
+        function initGame() {
+            player = new Player();
+            platforms = [];
+            stars = [];
+            particles = [];
+            cameraY = 0;
+            score = 0;
+
+            // 生成初始平台
+            spawnPlatform(GH - 15, true);
+            for (let i = 1; i < 7; i++) {
+                spawnPlatform(GH - 15 - i * 32);
+            }
+        }
+
+        function updateGame() {
+            frameCount++;
+            player.update();
+
+            // 相机向上平滑跟随玩家
+            const targetCamY = player.y - GH * 0.55;
+            if (targetCamY < cameraY) {
+                cameraY += (targetCamY - cameraY) * 0.1;
+            }
+            
+            // 随着时间推移相机也会自动缓慢上升（深渊逼近感）
+            if (score > 30) {
+                cameraY -= (0.25 + Math.min(0.6, score / 2000));
+            }
+
+            // 更新高度得分
+            const currentHeightScore = Math.floor(Math.abs(Math.min(0, player.y - (GH - 40))) / 5);
+            if (currentHeightScore > score) {
+                score = currentHeightScore;
+            }
+
+            // 更新平台与生成新平台
+            for (let p of platforms) {
+                if (p.type === 'MOVE') {
+                    p.x += p.vx;
+                    if (p.x < 5 || p.x + p.w > GW - 5) p.vx *= -1;
+                }
+            }
+
+            // 移除屏幕下方的平台并生成上方新平台
+            platforms = platforms.filter(p => p.y - cameraY < GH + 20);
+            while (platforms.length < 7) {
+                const highestY = Math.min(...platforms.map(p => p.y));
+                spawnPlatform(highestY - (28 + Math.random() * 8));
+            }
+
+            // 星星收集检测
+            for (let s of stars) {
+                if (!s.collected) {
+                    const dx = (player.x + player.w/2) - s.x;
+                    const dy = (player.y + player.h/2) - s.y;
+                    if (Math.hypot(dx, dy) < player.w/2 + s.r + 3) {
+                        s.collected = true;
+                        score += 25;
+                        sfx.playCoin();
+                        createParticles(s.x, s.y, 12, '#fde047');
+                    }
+                }
+            }
+            stars = stars.filter(s => !s.collected && s.y - cameraY < GH + 20);
+
+            // 更新粒子
+            for (let pt of particles) {
+                pt.x += pt.vx;
+                pt.y += pt.vy;
+                pt.life--;
+            }
+            particles = particles.filter(pt => pt.life > 0);
+
+            // 死亡判定 (掉落屏幕底部)
+            if (player.y - cameraY > GH + 15) {
+                sfx.playDead();
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('ice_pocket_hi', highScore);
+                }
+                gameState = 'OVER';
+            }
+        }
+
+        function drawBackground() {
+            // 深邃冰海渐变背景
+            const grad = ctx.createLinearGradient(0, 0, 0, GH);
+            grad.addColorStop(0, '#09101d');
+            grad.addColorStop(1, '#1e293b');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, GW, GH);
+
+            // 飘落雪花
+            ctx.fillStyle = 'rgba(224, 242, 254, 0.35)';
+            for (let s of bgSnow) {
+                if (gameState === 'PLAY') {
+                    s.y += s.s;
+                    if (s.y > GH) s.y = 0;
+                }
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawGame() {
+            drawBackground();
+
+            // 绘制平台
+            for (let p of platforms) {
+                if (p.broken) continue;
+                const py = p.y - cameraY;
+                
+                if (p.type === 'NORMAL') {
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.beginPath();
+                    ctx.roundRect(p.x, py, p.w, p.h, 3);
+                    ctx.fill();
+                    // 顶部积雪高光
+                    ctx.fillStyle = '#e0f2fe';
+                    ctx.beginPath();
+                    ctx.roundRect(p.x, py, p.w, 3, [3, 3, 0, 0]);
+                    ctx.fill();
+                } else if (p.type === 'MOVE') {
+                    ctx.fillStyle = '#f472b6'; // 粉色移动冰砖
+                    ctx.beginPath();
+                    ctx.roundRect(p.x, py, p.w, p.h, 3);
+                    ctx.fill();
+                    ctx.fillStyle = '#fce7f3';
+                    ctx.fillRect(p.x + 4, py + 1, p.w - 8, 2);
+                } else if (p.type === 'BREAK') {
+                    // 闪烁的碎冰
+                    const shake = p.timer > 0 ? (Math.random() - 0.5) * 2 : 0;
+                    ctx.fillStyle = p.timer > 12 ? 'rgba(186, 230, 253, 0.4)' : 'rgba(186, 230, 253, 0.75)';
+                    ctx.beginPath();
+                    ctx.roundRect(p.x + shake, py, p.w, p.h, 2);
+                    ctx.fill();
+                }
+            }
+
+            // 绘制收集星星 (冰晶菱形)
+            for (let s of stars) {
+                const sy = s.y - cameraY + Math.sin(frameCount * 0.1 + s.bobOffset) * 2.5;
+                ctx.save();
+                ctx.translate(s.x, sy);
+                ctx.rotate(frameCount * 0.04);
+                ctx.fillStyle = '#fde047';
+                ctx.fillRect(-3.5, -3.5, 7, 7);
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(-1.5, -1.5, 3, 3);
+                ctx.restore();
+            }
+
+            // 绘制粒子
+            for (let pt of particles) {
+                ctx.fillStyle = pt.color;
+                ctx.globalAlpha = pt.life / pt.maxLife;
+                ctx.beginPath();
+                ctx.arc(pt.x, pt.y - cameraY, pt.r, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+
+            // 绘制玩家
+            player.draw();
+
+            // 顶部 HUD 分数栏
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
+            ctx.fillRect(0, 0, GW, 18);
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = '8px "Press Start 2P"';
+            ctx.textAlign = 'left';
+            ctx.fillText(`SCORE:${score}`, 6, 12);
+            ctx.textAlign = 'right';
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText(`HI:${highScore}`, GW - 6, 12);
+        }
+
+        function drawTitleScreen() {
+            drawBackground();
+            frameCount++;
+
+            // 标题框
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(25, 30, GW - 50, 68, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#e0f2fe';
+            ctx.font = '14px "Press Start 2P"';
+            ctx.fillText('FROSTY', GW / 2, 56);
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillText('CLIMB', GW / 2, 78);
+
+            // 展示小冰灵动画
+            const bounceY = Math.abs(Math.sin(frameCount * 0.08)) * 12;
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.roundRect(GW/2 - 8, 125 - bounceY, 16, 16, [7, 7, 3, 3]);
+            ctx.fill();
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(GW/2 - 3, 130 - bounceY, 2, 3);
+            ctx.fillRect(GW/2 + 3, 130 - bounceY, 2, 3);
+
+            // 闪烁提示
+            if (Math.floor(frameCount / 25) % 2 === 0) {
+                ctx.fillStyle = '#fde047';
+                ctx.font = '8px "Press Start 2P"';
+                ctx.fillText('PRESS [A] OR START', GW / 2, 168);
+            }
+
+            ctx.fillStyle = '#64748b';
+            ctx.font = '7px "Press Start 2P"';
+            ctx.fillText('[A] JUMP   [B] DASH', GW / 2, 186);
+        }
+
+        function drawGameOver() {
+            drawGame();
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+            ctx.fillRect(0, 0, GW, GH);
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#fb7185';
+            ctx.font = '14px "Press Start 2P"';
+            ctx.fillText('GAME OVER', GW / 2, 75);
+
+            ctx.fillStyle = '#e0f2fe';
+            ctx.font = '9px "Press Start 2P"';
+            ctx.fillText(`SCORE: ${score}`, GW / 2, 105);
+            
+            ctx.fillStyle = '#fde047';
+            ctx.fillText(`BEST:  ${highScore}`, GW / 2, 125);
+
+            if (Math.floor(++frameCount / 25) % 2 === 0) {
+                ctx.fillStyle = '#38bdf8';
+                ctx.font = '8px "Press Start 2P"';
+                ctx.fillText('PRESS [A] TO RETRY', GW / 2, 160);
+            }
+        }
+
+        function drawPause() {
+            drawGame();
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
+            ctx.fillRect(0, 0, GW, GH);
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#e0f2fe';
+            ctx.font = '12px "Press Start 2P"';
+            ctx.fillText('PAUSED', GW / 2, GH / 2 + 4);
+        }
+
+        // 主循环
+        function loop() {
+            // 处理状态切换指令
+            if (justPressed.SELECT) {
+                sfx.init();
+                sfx.toggleMute();
+            }
+
+            if (gameState === 'TITLE') {
+                if (justPressed.A || justPressed.START) {
+                    sfx.init();
+                    sfx.playCoin();
+                    initGame();
+                    gameState = 'PLAY';
+                }
+                drawTitleScreen();
+            } else if (gameState === 'PLAY') {
+                if (justPressed.START) {
+                    gameState = 'PAUSE';
+                    sfx.playCoin();
+                } else {
+                    updateGame();
+                    drawGame();
+                }
+            } else if (gameState === 'PAUSE') {
+                if (justPressed.START || justPressed.A) {
+                    gameState = 'PLAY';
+                }
+                drawPause();
+            } else if (gameState === 'OVER') {
+                if (justPressed.A || justPressed.START) {
+                    sfx.playJump();
+                    initGame();
+                    gameState = 'PLAY';
+                }
+                drawGameOver();
+            }
+
+            // 重置单次触发按键
+            for (let k in justPressed) justPressed[k] = false;
+
+            requestAnimationFrame(loop);
+        }
+
+        /**
+         * 3. 硬件按钮与键盘交互绑定 (完美兼容移动端多点触控与桌面端)
+         */
+        function triggerButton(key, isDown) {
+            if (isDown) {
+                sfx.init();
+                if (!keys[key]) {
+                    justPressed[key] = true;
+                    // 移动端轻微震动反馈
+                    if (navigator.vibrate) navigator.vibrate(12);
+                }
+                keys[key] = true;
+            } else {
+                keys[key] = false;
+            }
+
+            // 更新UI按钮按下样式
+            const btnEl = document.querySelector(`[data-key="${key}"]`);
+            if (btnEl) {
+                if (isDown) btnEl.classList.add('active');
+                else btnEl.classList.remove('active');
+            }
+        }
+
+        // 绑定虚拟按键触摸与鼠标事件
+        document.querySelectorAll('[data-key]').forEach(btn => {
+            const key = btn.getAttribute('data-key');
+            
+            const handleDown = (e) => {
+                e.preventDefault();
+                triggerButton(key, true);
+            };
+            const handleUp = (e) => {
+                e.preventDefault();
+                triggerButton(key, false);
+            };
+
+            btn.addEventListener('pointerdown', handleDown);
+            btn.addEventListener('pointerup', handleUp);
+            btn.addEventListener('pointerleave', handleUp);
+            btn.addEventListener('pointercancel', handleUp);
+        });
+
+        // 绑定电脑端键盘事件
+        const keyMap = {
+            'ArrowUp': 'UP', 'KeyW': 'UP',
+            'ArrowDown': 'DOWN', 'KeyS': 'DOWN',
+            'ArrowLeft': 'LEFT', 'KeyA': 'LEFT',
+            'ArrowRight': 'RIGHT', 'KeyD': 'RIGHT',
+            'KeyJ': 'A', 'KeyZ': 'A', 'Space': 'A',
+            'KeyK': 'B', 'KeyX': 'B', 'ShiftLeft': 'B', 'ShiftRight': 'B',
+            'Enter': 'START',
+            'KeyM': 'SELECT'
+        };
+
+        window.addEventListener('keydown', (e) => {
+            const mapped = keyMap[e.code];
+            if (mapped) {
+                e.preventDefault();
+                triggerButton(mapped, true);
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            const mapped = keyMap[e.code];
+            if (mapped) {
+                e.preventDefault();
+                triggerButton(mapped, false);
+            }
+        });
+
+        // 启动游戏机
+        requestAnimationFrame(loop);
+
+</script>
+</body></html>
