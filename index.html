@@ -208,15 +208,19 @@ body {
 <div class="bg-bubble w-32 h-32 top-[20%] right-[20%]" style="animation-delay: -4s;"></div>
 <div class="bg-bubble w-24 h-24 bottom-[15%] left-[20%]" style="animation-delay: -6s;"></div>
 
-<!-- 顶部人体工学与游戏切换控制栏 -->
-<div class="relative z-20 flex items-center space-x-2.5 mb-2.5 px-3">
-    <button id="toggle-ergo-btn" class="top-pill px-3.5 py-1.5 rounded-full text-xs font-bold text-sky-900 flex items-center space-x-1.5 cursor-pointer">
+<!-- 顶部人体工学与系统桌面快捷栏 -->
+<div class="relative z-20 flex items-center space-x-2 mb-2.5 px-3">
+    <button id="toggle-ergo-btn" class="top-pill px-3 py-1.5 rounded-full text-xs font-bold text-sky-900 flex items-center space-x-1.5 cursor-pointer">
         <span id="ergo-icon">🕹️</span>
-        <span id="ergo-text">操作: 灵动摇杆 (跟手)</span>
+        <span id="ergo-text">操作: 灵动摇杆</span>
     </button>
-    <button id="switch-game-top" class="top-pill px-3.5 py-1.5 rounded-full text-xs font-bold text-rose-600 flex items-center space-x-1.5 cursor-pointer">
-        <span>🎮</span>
-        <span id="game-title-badge">切换: 冰晶攀登</span>
+    <button id="switch-game-top" class="top-pill px-3 py-1.5 rounded-full text-xs font-bold text-rose-600 flex items-center space-x-1.5 cursor-pointer">
+        <span>📱</span>
+        <span id="game-title-badge">桌面 (HOME)</span>
+    </button>
+    <button id="open-shop-top" class="top-pill px-3 py-1.5 rounded-full text-xs font-bold text-amber-600 flex items-center space-x-1 cursor-pointer">
+        <span>🛍️</span>
+        <span>商店</span>
     </button>
 </div>
 
@@ -236,14 +240,14 @@ body {
         <div class="flex justify-between items-center mb-1 px-1">
             <div class="flex items-center space-x-1.5">
                 <div id="power-led" class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] transition-colors duration-300"></div>
-                <span class="text-[9px] font-bold tracking-widest text-sky-900/60">BATTERY</span>
+                <span id="led-label" class="text-[9px] font-bold tracking-widest text-sky-900/60">ICE OS</span>
             </div>
-            <span id="bezel-game-label" class="text-[10px] font-bold tracking-wider text-sky-800/70 italic">ICE POCKET · 01</span>
+            <span id="bezel-game-label" class="text-[10px] font-bold tracking-wider text-sky-800/70 italic">ICE OS · HOME</span>
         </div>
 
-        <!-- 画布容器 -->
+        <!-- 画布容器 (支持直接触控点击桌面应用) -->
         <div class="game-screen w-full flex-1 rounded-[12px] relative overflow-hidden">
-            <canvas id="gameCanvas" class="w-full h-full block"></canvas>
+            <canvas id="gameCanvas" class="w-full h-full block cursor-pointer"></canvas>
             <div class="scanlines absolute inset-0 pointer-events-none"></div>
             <!-- 屏幕玻璃反光 -->
             <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/15 pointer-events-none"></div>
@@ -251,7 +255,7 @@ body {
 
         <!-- 底部Logo与屏幕内快捷提示 -->
         <div class="flex justify-between items-center mt-1.5 px-1">
-            <span class="text-[9px] font-bold text-sky-900/50 tracking-wider">HD PIXEL MATRIX</span>
+            <span class="text-[9px] font-bold text-sky-900/50 tracking-wider">↑↓↑←→←→ AUTO</span>
             <span class="text-[11px] font-extrabold tracking-[0.2em] text-sky-950/45 bg-white/45 px-2.5 py-0.5 rounded-full shadow-sm border border-white/60">NINTENDO<span class="text-rose-400/80">★</span>ICE</span>
             <span id="control-mode-tag" class="text-[9px] font-bold text-sky-700/60 tracking-wider">JOYSTICK</span>
         </div>
@@ -323,9 +327,9 @@ body {
         </div>
     </div>
 
-    <!-- 底部功能键与扬声器 (新增 GAME 切换胶囊键) -->
+    <!-- 底部功能键与扬声器 (HOME 桌面键) -->
     <div class="relative flex justify-center items-end pb-1 pt-1">
-        <!-- SOUND / GAME / START -->
+        <!-- SOUND / HOME / START -->
         <div class="flex space-x-4">
             <div class="flex flex-col items-center">
                 <button id="btn-select" data-key="SELECT" class="pill-btn w-9 h-3.5 rounded-full transform -rotate-[20deg]"></button>
@@ -333,7 +337,7 @@ body {
             </div>
             <div class="flex flex-col items-center">
                 <button id="btn-game" data-key="GAME" class="pill-btn w-9 h-3.5 rounded-full transform -rotate-[20deg] !bg-sky-200/80 border-sky-100"></button>
-                <span class="text-[8px] font-bold tracking-widest text-sky-800/75 mt-1.5">GAME</span>
+                <span class="text-[8px] font-bold tracking-widest text-sky-800/75 mt-1.5">HOME</span>
             </div>
             <div class="flex flex-col items-center">
                 <button id="btn-start" data-key="START" class="pill-btn w-9 h-3.5 rounded-full transform -rotate-[20deg]"></button>
@@ -355,12 +359,12 @@ body {
 </div>
 
 <!-- 电脑端操作提示 -->
-<div class="hidden md:flex fixed bottom-3 left-1/2 -translate-x-1/2 bg-white/45 backdrop-blur-md px-4 py-1 rounded-full border border-white/60 text-sky-900/75 text-xs space-x-4 shadow-sm z-20">
-    <span><b>方向键 / WASD</b>: 移动</span>
-    <span><b>J / Z / 空格</b>: A键 (确认/跳跃/发射)</span>
-    <span><b>K / X / Shift</b>: B键 (冲刺/磁铁)</span>
-    <span><b>G / Tab</b>: 切换游戏</span>
-    <span><b>Enter</b>: 暂停</span>
+<div class="hidden md:flex fixed bottom-3 left-1/2 -translate-x-1/2 bg-white/55 backdrop-blur-md px-4 py-1 rounded-full border border-white/60 text-sky-900/80 text-xs space-x-3 shadow-sm z-20">
+    <span><b>方向键/WASD</b>:移动/选择</span>
+    <span><b>J/空格</b>:A键(确认/跳跃)</span>
+    <span><b>K/Shift</b>:B键(返回/取消AI)</span>
+    <span><b>G/Tab</b>:HOME桌面</span>
+    <span><b>秘籍(↑↓↑←→←→)</b>:开启AI托管</span>
 </div>
 
 <script>
@@ -383,13 +387,8 @@ class SoundFX {
     }
     toggleMute() {
         this.muted = !this.muted;
-        const led = document.getElementById('power-led');
-        if(this.muted) {
-            led.className = "w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]";
-        } else {
-            led.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]";
-            this.playCoin();
-        }
+        updateLedIndicator();
+        if (!this.muted) this.playCoin();
     }
     playJump() {
         if (this.muted || !this.ctx) return;
@@ -398,7 +397,7 @@ class SoundFX {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(300, this.ctx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.14, this.ctx.currentTime);
         gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.12);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
@@ -412,12 +411,27 @@ class SoundFX {
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(600, this.ctx.currentTime);
         osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.15);
-        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.18, this.ctx.currentTime);
         gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
         osc.stop(this.ctx.currentTime + 0.15);
+    }
+    playLaser() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(880, now);
+        osc.frequency.exponentialRampToValueAtTime(220, now + 0.08);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(now + 0.08);
     }
     playBounce() {
         if (this.muted || !this.ctx) return;
@@ -440,14 +454,31 @@ class SoundFX {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(987.77, now); // B5
-        osc.frequency.setValueAtTime(1318.51, now + 0.07); // E6
+        osc.frequency.setValueAtTime(987.77, now);
+        osc.frequency.setValueAtTime(1318.51, now + 0.07);
         gain.gain.setValueAtTime(0.15, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
-        osc.stop(now + 0.35);
+        osc.stop(now + 0.32);
+    }
+    playCheat() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.5];
+        notes.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.065);
+            gain.gain.setValueAtTime(0.16, now + idx * 0.065);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.065 + 0.22);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.065);
+            osc.stop(now + idx * 0.065 + 0.22);
+        });
     }
     playSwitch() {
         if (this.muted || !this.ctx) return;
@@ -455,15 +486,15 @@ class SoundFX {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(523.25, now); // C5
-        osc.frequency.setValueAtTime(659.25, now + 0.06); // E5
-        osc.frequency.setValueAtTime(783.99, now + 0.12); // G5
-        gain.gain.setValueAtTime(0.15, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.06);
+        osc.frequency.setValueAtTime(783.99, now + 0.12);
+        gain.gain.setValueAtTime(0.14, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start();
-        osc.stop(now + 0.28);
+        osc.stop(now + 0.25);
     }
     playDead() {
         if (this.muted || !this.ctx) return;
@@ -485,35 +516,139 @@ class SoundFX {
 const sfx = new SoundFX();
 
 /**
- * 2. 双游戏合集引擎：
- *    游戏 0: 《FROSTY CLIMB 冰晶攀登》 (经典平台跳跃冲刺)
- *    游戏 1: 《GLACIER BREAKER 冰川弹球》 (全新爽快打砖块+星尘收集+多球掉落)
+ * 2. ICE OS 系统状态、商店皮肤与道具、秘籍引擎
+ *    - 安卓风格桌面启动器 (HOME): 3款小游戏 + 1个星尘商店
+ *    - 十字键秘籍 (↑ ↓ ↑ ← → ← →): 开启 AI 自动托管，按 B 键取消
  */
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// 内部渲染分辨率 (放大高度适配全新大屏幕，画面更清晰宽敞)
 const GW = 240;
 const GH = 228;
 canvas.width = GW;
 canvas.height = GH;
 
-// 输入状态管理 (支持摇杆模拟量 analogX 提升跟手感)
+// 输入状态管理
 const keys = { UP: false, DOWN: false, LEFT: false, RIGHT: false, A: false, B: false };
-const justPressed = { A: false, B: false, START: false, SELECT: false, GAME: false, LEFT: false, RIGHT: false };
-let analogX = 0; // -1.0 到 1.0 连续跟手输入
+const justPressed = { UP: false, DOWN: false, LEFT: false, RIGHT: false, A: false, B: false, START: false, SELECT: false, GAME: false };
+let analogX = 0;
+let analogY = 0;
 
-// 全局状态
-let currentGame = 0; // 0: FROSTY CLIMB, 1: GLACIER BREAKER
-const GAME_NAMES = ['冰晶攀登', '冰川弹球'];
+// 系统与游戏状态
+// systemView: 'HOME' (安卓桌面) | 'SHOP' (冰晶商店) | 'GAME' (正在运行的游戏)
+let systemView = 'HOME';
+let homeCursor = 0; // 0: 冰晶攀登, 1: 冰川弹球, 2: 极光战机, 3: 冰晶商店
+let currentGame = 0; // 0: FROSTY CLIMB, 1: GLACIER BREAKER, 2: AURORA DEFENDER
+const GAME_NAMES = ['冰晶攀登', '冰川弹球', '极光战机'];
 let gameState = 'TITLE'; // TITLE, PLAY, PAUSE, OVER
 let score = 0;
 let highScores = [
     Number(localStorage.getItem('ice_pocket_hi_0') || 0),
-    Number(localStorage.getItem('ice_pocket_hi_1') || 0)
+    Number(localStorage.getItem('ice_pocket_hi_1') || 0),
+    Number(localStorage.getItem('ice_pocket_hi_2') || 0)
 ];
 let frameCount = 0;
-let switchBannerTimer = 0;
+let toastMsg = '';
+let toastTimer = 0;
+
+// 秘籍自动操作状态 (上下上左右左右)
+let autoPlay = false;
+const CHEAT_SEQUENCE = ['UP', 'DOWN', 'UP', 'LEFT', 'RIGHT', 'LEFT', 'RIGHT'];
+let cheatBuffer = [];
+
+// 商店与星尘货币数据持久化
+const defaultShopState = {
+    coins: 200, // 初始赠送 200 星尘供体验兑换
+    activeSkin: 'skin_ice',
+    ownedSkins: ['skin_ice'],
+    items: {
+        shield: 1,      // 冰晶护盾 (抵消一次坠落/漏球/撞击)
+        wide: 0,        // 巨型光翼 (平台加宽/挡板加长/双排激光)
+        starDouble: 0   // 双倍星尘卡
+    },
+    useItems: {
+        shield: true,
+        wide: true,
+        starDouble: true
+    }
+};
+
+let shopData = JSON.parse(localStorage.getItem('ice_pocket_shop_v2') || 'null') || defaultShopState;
+function saveShopData() {
+    localStorage.setItem('ice_pocket_shop_v2', JSON.stringify(shopData));
+}
+
+// 皮肤配置表
+const SKINS = {
+    skin_ice: {
+        id: 'skin_ice', name: '冰雪初音蓝', price: 0,
+        primary: '#ffffff', accent: '#38bdf8', blush: '#fb7185', trail: '#38bdf8', paddle: '#38bdf8'
+    },
+    skin_sakura: {
+        id: 'skin_sakura', name: '樱花果冻粉', price: 100,
+        primary: '#fff1f2', accent: '#f43f5e', blush: '#ec4899', trail: '#fb7185', paddle: '#fb7185'
+    },
+    skin_gold: {
+        id: 'skin_gold', name: '流光黄金甲', price: 200,
+        primary: '#fef9c3', accent: '#eab308', blush: '#f97316', trail: '#fde047', paddle: '#facc15'
+    },
+    skin_neon: {
+        id: 'skin_neon', name: '赛博极光紫', price: 300,
+        primary: '#f3e8ff', accent: '#a855f7', blush: '#2dd4bf', trail: '#c084fc', paddle: '#a855f7'
+    }
+};
+
+const SHOP_CATALOG = [
+    { id: 'skin_ice', type: 'skin', name: '冰雪初音蓝', desc: '经典透明冰晶主题外观', price: 0, color: '#38bdf8' },
+    { id: 'skin_sakura', type: 'skin', name: '樱花果冻粉', desc: '少女心粉色角色与战机', price: 100, color: '#fb7185' },
+    { id: 'skin_gold', type: 'skin', name: '流光黄金甲', desc: '尊贵黄金特效与弹球', price: 200, color: '#fde047' },
+    { id: 'skin_neon', type: 'skin', name: '赛博极光紫', desc: '暗夜霓虹流光主题皮肤', price: 300, color: '#c084fc' },
+    { id: 'shield', type: 'item', name: '冰晶护盾', desc: '免疫1次坠落/漏球/受击', price: 50, color: '#34d399' },
+    { id: 'wide', type: 'item', name: '极光增幅器', desc: '挡板加长/跳台变宽/双发', price: 65, color: '#60a5fa' },
+    { id: 'starDouble', type: 'item', name: '双倍星尘卡', desc: '本局得分与星尘获取翻倍', price: 80, color: '#f59e0b' }
+];
+let shopTab = 0; // 0: 皮肤外观, 1: 增益道具
+let shopCursor = 0;
+
+// 当前局内激活的道具状态
+let activeRunPerks = { shield: false, wide: false, starDouble: false };
+
+function consumeRunItems() {
+    activeRunPerks = { shield: false, wide: false, starDouble: false };
+    ['shield', 'wide', 'starDouble'].forEach(k => {
+        if (shopData.useItems[k] && shopData.items[k] > 0) {
+            shopData.items[k]--;
+            activeRunPerks[k] = true;
+        }
+    });
+    saveShopData();
+}
+
+function addCoins(amount) {
+    const mult = activeRunPerks.starDouble ? 2 : 1;
+    shopData.coins += amount * mult;
+    saveShopData();
+}
+
+function showToast(msg, frames = 85) {
+    toastMsg = msg;
+    toastTimer = frames;
+}
+
+function updateLedIndicator() {
+    const led = document.getElementById('power-led');
+    const label = document.getElementById('led-label');
+    if (autoPlay) {
+        led.className = "w-2.5 h-2.5 rounded-full bg-fuchsia-400 shadow-[0_0_10px_#e879f9] animate-pulse";
+        label.textContent = "AI AUTO";
+    } else if (sfx.muted) {
+        led.className = "w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]";
+        label.textContent = "MUTED";
+    } else {
+        led.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]";
+        label.textContent = "ICE OS";
+    }
+}
 
 // 通用背景雪花与粒子
 let particles = [];
@@ -543,7 +678,354 @@ function createParticles(x, y, count, color, yOffset = 0) {
     }
 }
 
-/* ================= 游戏 0: FROSTY CLIMB (冰晶攀登) ================= */
+/* ================= 安卓桌面系统 (ICE OS HOME LAUNCHER) ================= */
+const APP_CARDS = [
+    { title: '冰晶攀登', sub: 'CLIMB', color: '#38bdf8', bg: 'rgba(56, 189, 248, 0.22)', x: 18, y: 50, w: 94, h: 66 },
+    { title: '冰川弹球', sub: 'BREAKER', color: '#f472b6', bg: 'rgba(244, 114, 182, 0.22)', x: 128, y: 50, w: 94, h: 66 },
+    { title: '极光战机', sub: 'GALAXY', color: '#a78bfa', bg: 'rgba(167, 139, 250, 0.22)', x: 18, y: 124, w: 94, h: 66 },
+    { title: '冰晶商店', sub: 'SHOP', color: '#fbbf24', bg: 'rgba(251, 191, 36, 0.22)', x: 128, y: 124, w: 94, h: 66 }
+];
+
+function openHomeDesktop() {
+    sfx.init();
+    sfx.playSwitch();
+    systemView = 'HOME';
+    document.getElementById('bezel-game-label').textContent = 'ICE OS · HOME';
+    document.getElementById('game-title-badge').textContent = '桌面 (HOME)';
+}
+
+function openShopScreen() {
+    sfx.init();
+    sfx.playSwitch();
+    systemView = 'SHOP';
+    document.getElementById('bezel-game-label').textContent = 'ICE OS · SHOP';
+    document.getElementById('game-title-badge').textContent = '返回桌面';
+}
+
+function launchApp(index) {
+    sfx.init();
+    sfx.playCoin();
+    if (index === 3) {
+        openShopScreen();
+    } else {
+        currentGame = index;
+        systemView = 'GAME';
+        gameState = 'TITLE';
+        document.getElementById('bezel-game-label').textContent = `ICE POCKET · 0${currentGame + 1}`;
+        document.getElementById('game-title-badge').textContent = `桌面 (${GAME_NAMES[currentGame]})`;
+    }
+}
+
+function updateHomeDesktop() {
+    frameCount++;
+    if (justPressed.RIGHT && homeCursor % 2 === 0) { homeCursor++; sfx.playBounce(); }
+    if (justPressed.LEFT && homeCursor % 2 === 1) { homeCursor--; sfx.playBounce(); }
+    if (justPressed.DOWN && homeCursor < 2) { homeCursor += 2; sfx.playBounce(); }
+    if (justPressed.UP && homeCursor >= 2) { homeCursor -= 2; sfx.playBounce(); }
+
+    if (justPressed.A || justPressed.START) {
+        launchApp(homeCursor);
+    }
+}
+
+function drawHomeDesktop() {
+    drawBackground();
+
+    // 安卓风格顶部状态栏
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.78)';
+    ctx.fillRect(0, 0, GW, 20);
+    ctx.fillStyle = '#e0f2fe';
+    ctx.font = '7px "Press Start 2P"';
+    ctx.textAlign = 'left';
+    ctx.fillText('ICE OS 3.0', 8, 13);
+
+    // 星尘余额展示
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#fde047';
+    ctx.fillText(`★${shopData.coins}`, GW - 8, 13);
+
+    // 桌面小组件日期/秘籍状态横幅
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx.beginPath();
+    ctx.roundRect(18, 25, GW - 36, 19, 6);
+    ctx.fill();
+    ctx.textAlign = 'center';
+    ctx.font = '6.5px "Press Start 2P"';
+    if (autoPlay) {
+        ctx.fillStyle = '#e879f9';
+        ctx.fillText('🤖 AI AUTO-PILOT READY [B:OFF]', GW / 2, 37.5);
+    } else {
+        ctx.fillStyle = '#bae6fd';
+        ctx.fillText('SELECT APP OR TAP SCREEN', GW / 2, 37.5);
+    }
+
+    // 绘制 2x2 安卓桌面应用图标网格
+    APP_CARDS.forEach((app, idx) => {
+        const selected = idx === homeCursor;
+        const bounce = selected ? Math.sin(frameCount * 0.12) * 2 : 0;
+
+        ctx.save();
+        ctx.translate(0, bounce);
+
+        // 卡片底板
+        ctx.fillStyle = selected ? app.bg : 'rgba(15, 23, 42, 0.65)';
+        ctx.strokeStyle = selected ? app.color : 'rgba(148, 163, 184, 0.35)';
+        ctx.lineWidth = selected ? 2.2 : 1;
+        ctx.beginPath();
+        ctx.roundRect(app.x, app.y, app.w, app.h, 12);
+        ctx.fill();
+        ctx.stroke();
+
+        // 绘制精致像素图标
+        const icX = app.x + app.w / 2;
+        const icY = app.y + 24;
+        if (idx === 0) {
+            // 冰晶攀登图标：小冰灵
+            const sk = SKINS[shopData.activeSkin];
+            ctx.fillStyle = sk.primary;
+            ctx.beginPath();
+            ctx.roundRect(icX - 9, icY - 9, 18, 18, [6, 6, 3, 3]);
+            ctx.fill();
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(icX - 4, icY - 3, 2, 4);
+            ctx.fillRect(icX + 2, icY - 3, 2, 4);
+            ctx.fillStyle = sk.accent;
+            ctx.fillRect(icX - 12, icY + 11, 24, 3);
+        } else if (idx === 1) {
+            // 冰川弹球图标：挡板+弹球+砖块
+            ctx.fillStyle = '#f472b6';
+            ctx.fillRect(icX - 14, icY - 10, 12, 5);
+            ctx.fillStyle = '#38bdf8';
+            ctx.fillRect(icX + 2, icY - 10, 12, 5);
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.arc(icX + 3, icY + 1, 3.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#38bdf8';
+            ctx.beginPath();
+            ctx.roundRect(icX - 14, icY + 8, 28, 4, 2);
+            ctx.fill();
+        } else if (idx === 2) {
+            // 极光战机图标：像素战机
+            ctx.fillStyle = '#a78bfa';
+            ctx.beginPath();
+            ctx.moveTo(icX, icY - 11);
+            ctx.lineTo(icX + 12, icY + 9);
+            ctx.lineTo(icX, icY + 4);
+            ctx.lineTo(icX - 12, icY + 9);
+            ctx.closePath();
+            ctx.fill();
+            ctx.fillStyle = '#fde047';
+            ctx.fillRect(icX - 1.5, icY - 15, 3, 5);
+        } else if (idx === 3) {
+            // 冰晶商店图标：礼盒与星尘
+            ctx.fillStyle = '#fbbf24';
+            ctx.beginPath();
+            ctx.roundRect(icX - 11, icY - 6, 22, 16, 4);
+            ctx.fill();
+            ctx.fillStyle = '#f43f5e';
+            ctx.fillRect(icX - 2, icY - 6, 4, 16);
+            ctx.fillRect(icX - 11, icY, 22, 4);
+        }
+
+        // 标题文字
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 11px "Fredoka", sans-serif';
+        ctx.fillText(app.title, icX, app.y + 49);
+
+        ctx.fillStyle = app.color;
+        ctx.font = '6px "Press Start 2P"';
+        ctx.fillText(app.sub, icX, app.y + 60);
+
+        ctx.restore();
+    });
+
+    // 底部安卓导航栏 Dock
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.72)';
+    ctx.beginPath();
+    ctx.roundRect(24, GH - 26, GW - 48, 19, 10);
+    ctx.fill();
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '6.5px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.fillText('[A] OPEN APP   [HOME] DESKTOP', GW / 2, GH - 14);
+}
+
+/* ================= 冰晶商店系统 (ICE SHOP: 皮肤与道具兑换) ================= */
+function updateShopScreen() {
+    frameCount++;
+    const itemsInTab = SHOP_CATALOG.filter(it => (shopTab === 0 ? it.type === 'skin' : it.type === 'item'));
+
+    if (justPressed.LEFT || justPressed.RIGHT) {
+        shopTab = shopTab === 0 ? 1 : 0;
+        shopCursor = 0;
+        sfx.playBounce();
+    }
+    if (justPressed.DOWN) {
+        shopCursor = (shopCursor + 1) % itemsInTab.length;
+        sfx.playBounce();
+    }
+    if (justPressed.UP) {
+        shopCursor = (shopCursor - 1 + itemsInTab.length) % itemsInTab.length;
+        sfx.playBounce();
+    }
+
+    // B 键返回桌面
+    if (justPressed.B) {
+        openHomeDesktop();
+        return;
+    }
+
+    // A 键购买/穿戴/切换道具开关
+    if (justPressed.A) {
+        const entry = itemsInTab[shopCursor];
+        if (!entry) return;
+
+        if (entry.type === 'skin') {
+            const owned = shopData.ownedSkins.includes(entry.id);
+            if (owned) {
+                shopData.activeSkin = entry.id;
+                saveShopData();
+                sfx.playCoin();
+                showToast(`已装备: ${entry.name}`);
+            } else if (shopData.coins >= entry.price) {
+                shopData.coins -= entry.price;
+                shopData.ownedSkins.push(entry.id);
+                shopData.activeSkin = entry.id;
+                saveShopData();
+                sfx.playCheat();
+                showToast(`解锁成功: ${entry.name}!`);
+            } else {
+                sfx.playDead();
+                showToast('星尘不足! 快去玩游戏收集吧');
+            }
+        } else {
+            // 购买道具
+            if (shopData.coins >= entry.price) {
+                shopData.coins -= entry.price;
+                shopData.items[entry.id] = (shopData.items[entry.id] || 0) + 1;
+                shopData.useItems[entry.id] = true;
+                saveShopData();
+                sfx.playCoin();
+                showToast(`已兑换 ${entry.name} x1`);
+            } else {
+                sfx.playDead();
+                showToast('星尘不足! 无法兑换该道具');
+            }
+        }
+    }
+
+    // START 键在道具页可切换道具是否携带出战
+    if (justPressed.START && shopTab === 1) {
+        const entry = itemsInTab[shopCursor];
+        if (entry) {
+            shopData.useItems[entry.id] = !shopData.useItems[entry.id];
+            saveShopData();
+            sfx.playBounce();
+        }
+    }
+}
+
+function drawShopScreen() {
+    drawBackground();
+
+    // 顶部栏
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+    ctx.fillRect(0, 0, GW, 22);
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = '8px "Press Start 2P"';
+    ctx.textAlign = 'left';
+    ctx.fillText('ICE SHOP', 8, 15);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#fde047';
+    ctx.fillText(`★${shopData.coins}`, GW - 8, 15);
+
+    // 选项卡切换 (◀ 皮肤外观 | 增益道具 ▶)
+    const tabs = ['🎨 角色皮肤', '⚡ 强力道具'];
+    tabs.forEach((t, idx) => {
+        const active = shopTab === idx;
+        ctx.fillStyle = active ? '#38bdf8' : 'rgba(30, 41, 59, 0.8)';
+        ctx.beginPath();
+        ctx.roundRect(14 + idx * 108, 27, 104, 19, 5);
+        ctx.fill();
+        ctx.fillStyle = active ? '#0f172a' : '#94a3b8';
+        ctx.font = 'bold 10px "Fredoka", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(t, 66 + idx * 108, 40);
+    });
+
+    // 商品列表
+    const itemsInTab = SHOP_CATALOG.filter(it => (shopTab === 0 ? it.type === 'skin' : it.type === 'item'));
+    itemsInTab.forEach((item, idx) => {
+        const y = 52 + idx * 36;
+        const selected = idx === shopCursor;
+
+        ctx.fillStyle = selected ? 'rgba(56, 189, 248, 0.22)' : 'rgba(15, 23, 42, 0.65)';
+        ctx.strokeStyle = selected ? item.color : 'rgba(148, 163, 184, 0.25)';
+        ctx.lineWidth = selected ? 1.8 : 1;
+        ctx.beginPath();
+        ctx.roundRect(14, y, GW - 28, 32, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        // 颜色标识块
+        ctx.fillStyle = item.color;
+        ctx.beginPath();
+        ctx.roundRect(20, y + 6, 18, 20, 4);
+        ctx.fill();
+
+        // 名称与描述
+        ctx.textAlign = 'left';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 10px "Fredoka", sans-serif';
+        ctx.fillText(item.name, 44, y + 14);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '9px "Fredoka", sans-serif';
+        ctx.fillText(item.desc, 44, y + 26);
+
+        // 右侧价格或状态
+        ctx.textAlign = 'right';
+        if (item.type === 'skin') {
+            const owned = shopData.ownedSkins.includes(item.id);
+            const equipped = shopData.activeSkin === item.id;
+            if (equipped) {
+                ctx.fillStyle = '#34d399';
+                ctx.font = '6.5px "Press Start 2P"';
+                ctx.fillText('EQUIPPED', GW - 20, y + 19);
+            } else if (owned) {
+                ctx.fillStyle = '#38bdf8';
+                ctx.font = '6.5px "Press Start 2P"';
+                ctx.fillText('OWNED', GW - 20, y + 19);
+            } else {
+                ctx.fillStyle = '#fde047';
+                ctx.font = '7px "Press Start 2P"';
+                ctx.fillText(`★${item.price}`, GW - 20, y + 19);
+            }
+        } else {
+            const count = shopData.items[item.id] || 0;
+            const armed = shopData.useItems[item.id];
+            ctx.fillStyle = '#fde047';
+            ctx.font = '6.5px "Press Start 2P"';
+            ctx.fillText(`★${item.price}`, GW - 20, y + 13);
+            ctx.fillStyle = count > 0 && armed ? '#34d399' : '#94a3b8';
+            ctx.font = '6px "Press Start 2P"';
+            ctx.fillText(`x${count} ${armed ? '[ON]' : '[OFF]'}`, GW - 20, y + 25);
+        }
+    });
+
+    // 底部提示栏
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
+    ctx.fillRect(0, GH - 20, GW, 20);
+    ctx.fillStyle = '#bae6fd';
+    ctx.font = '6px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.fillText(shopTab === 0 ? '[◀▶]TAB  [A]BUY/EQUIP  [B]HOME' : '[A]BUY  [START]ON/OFF  [B]HOME', GW / 2, GH - 7);
+}
+
+/* ================= 游戏 0: FROSTY CLIMB (冰晶攀登 + AI托管 + 皮肤道具) ================= */
 let cameraY = 0;
 let player;
 let platforms = [];
@@ -568,10 +1050,52 @@ class ClimbPlayer {
     update() {
         const accel = this.grounded ? 0.55 : 0.35;
         const maxSpeed = 2.75;
-        
+        let aiMoveX = 0;
+        let aiJump = false;
+        let aiDash = false;
+
+        // 秘籍 AI 自动操作逻辑：智能寻找上方最近平台与星星
+        if (autoPlay) {
+            let targetPlat = null;
+            let bestScore = Infinity;
+            for (let p of platforms) {
+                if (p.broken) continue;
+                const dy = (this.y + this.h) - p.y;
+                // 优先寻找角色上方可跳跃高度内的平台
+                if (dy >= -8 && dy < 78) {
+                    const dist = Math.abs((p.x + p.w / 2) - (this.x + this.w / 2)) + Math.max(0, dy) * 0.6;
+                    if (dist < bestScore) {
+                        bestScore = dist;
+                        targetPlat = p;
+                    }
+                }
+            }
+            if (!targetPlat) {
+                // 兜底寻找最高安全平台
+                for (let p of platforms) {
+                    if (!p.broken && (!targetPlat || p.y < targetPlat.y)) targetPlat = p;
+                }
+            }
+            if (targetPlat) {
+                const targetX = targetPlat.x + targetPlat.w / 2 - this.w / 2;
+                const diffX = targetX - this.x;
+                if (Math.abs(diffX) > 3) {
+                    aiMoveX = Math.max(-1, Math.min(1, diffX / 18));
+                }
+                if (this.grounded) {
+                    aiJump = true;
+                } else if (this.vy > 1.5 && (this.y - targetPlat.y) > 25 && Math.abs(diffX) > 26 && this.dashCool === 0) {
+                    this.facing = diffX > 0 ? 1 : -1;
+                    aiDash = true;
+                }
+            }
+        }
+
         if (this.dashTime <= 0) {
-            if (Math.abs(analogX) > 0.1) {
-                // 摇杆丝滑跟手速率响应
+            if (autoPlay) {
+                this.vx += (aiMoveX * maxSpeed - this.vx) * 0.4;
+                if (Math.abs(aiMoveX) > 0.05) this.facing = aiMoveX > 0 ? 1 : -1;
+            } else if (Math.abs(analogX) > 0.1) {
                 const targetVx = analogX * maxSpeed;
                 this.vx += (targetVx - this.vx) * 0.35;
                 this.facing = analogX > 0 ? 1 : -1;
@@ -587,19 +1111,21 @@ class ClimbPlayer {
             }
         }
 
-        // 跳跃 (A键 或 UP键)
-        if ((justPressed.A || keys.UP) && this.grounded) {
-            this.vy = -5.5;
+        const sk = SKINS[shopData.activeSkin] || SKINS.skin_ice;
+
+        // 跳跃 (A键 或 UP键 或 AI跳跃)
+        if ((justPressed.A || keys.UP || aiJump) && this.grounded) {
+            this.vy = -5.6;
             this.grounded = false;
             this.scaleX = 0.7;
             this.scaleY = 1.35;
             sfx.playJump();
-            createParticles(this.x + this.w/2, this.y + this.h, 5, '#e0f2fe', true);
+            createParticles(this.x + this.w/2, this.y + this.h, 5, sk.primary, true);
         }
 
-        // 冲刺 (B键)
+        // 冲刺 (B键 - 非AI模式下 或 AI自动触发)
         if (this.dashCool > 0) this.dashCool--;
-        if (justPressed.B && this.dashCool === 0 && this.dashTime <= 0) {
+        if (((!autoPlay && justPressed.B) || aiDash) && this.dashCool === 0 && this.dashTime <= 0) {
             this.dashTime = 8;
             this.dashCool = 42;
             this.vx = this.facing * 5.6;
@@ -607,14 +1133,14 @@ class ClimbPlayer {
             this.scaleX = 1.4;
             this.scaleY = 0.6;
             sfx.playDash();
-            createParticles(this.x + this.w/2, this.y + this.h/2, 8, '#38bdf8', true);
+            createParticles(this.x + this.w/2, this.y + this.h/2, 8, sk.trail, true);
         }
 
         if (this.dashTime > 0) {
             this.dashTime--;
             particles.push({
                 x: this.x + this.w/2, y: this.y + this.h/2,
-                vx: 0, vy: 0, r: 5, life: 8, maxLife: 8, color: 'rgba(56, 189, 248, 0.5)', useCam: true
+                vx: 0, vy: 0, r: 5, life: 8, maxLife: 8, color: sk.trail, useCam: true
             });
         } else {
             this.vy += 0.24;
@@ -662,13 +1188,24 @@ class ClimbPlayer {
     }
 
     draw() {
+        const sk = SKINS[shopData.activeSkin] || SKINS.skin_ice;
         ctx.save();
         const cx = this.x + this.w / 2;
         const cy = this.y - cameraY + this.h;
         ctx.translate(cx, cy);
+
+        // 护盾光环展示
+        if (activeRunPerks.shield) {
+            ctx.strokeStyle = '#34d399';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(0, -this.h / 2, 11, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+
         ctx.scale(this.scaleX, this.scaleY);
 
-        ctx.fillStyle = this.dashCool > 0 && this.dashTime <= 0 ? '#bae6fd' : '#ffffff';
+        ctx.fillStyle = this.dashCool > 0 && this.dashTime <= 0 ? sk.accent : sk.primary;
         ctx.beginPath();
         ctx.roundRect(-this.w/2, -this.h, this.w, this.h, [6, 6, 3, 3]);
         ctx.fill();
@@ -678,11 +1215,11 @@ class ClimbPlayer {
         ctx.fillRect(-3 + eyeOffset, -this.h + 5, 2, 3);
         ctx.fillRect(2 + eyeOffset, -this.h + 5, 2, 3);
 
-        ctx.fillStyle = '#fb7185';
+        ctx.fillStyle = sk.blush;
         ctx.fillRect(-5 + eyeOffset, -this.h + 8, 2, 1.5);
         ctx.fillRect(4 + eyeOffset, -this.h + 8, 2, 1.5);
 
-        ctx.fillStyle = '#38bdf8';
+        ctx.fillStyle = sk.accent;
         ctx.beginPath();
         ctx.arc(0, -this.h - 2, 2, 0, Math.PI * 2);
         ctx.fill();
@@ -692,7 +1229,8 @@ class ClimbPlayer {
 }
 
 function spawnPlatform(y, isFirst = false) {
-    const w = isFirst ? GW - 40 : Math.max(36, 65 - Math.floor(score / 150));
+    const wideBonus = activeRunPerks.wide ? 16 : 0;
+    const w = isFirst ? GW - 40 : Math.max(38, 65 - Math.floor(score / 150)) + wideBonus;
     const x = isFirst ? 20 : Math.random() * (GW - w - 10) + 5;
     
     let type = 'NORMAL';
@@ -710,7 +1248,7 @@ function spawnPlatform(y, isFirst = false) {
         broken: false
     });
 
-    if (!isFirst && Math.random() < 0.45) {
+    if (!isFirst && Math.random() < 0.48) {
         stars.push({
             x: x + w / 2,
             y: y - 16,
@@ -722,6 +1260,7 @@ function spawnPlatform(y, isFirst = false) {
 }
 
 function initClimbGame() {
+    consumeRunItems();
     player = new ClimbPlayer();
     platforms = [];
     stars = [];
@@ -748,7 +1287,11 @@ function updateClimbGame() {
     }
 
     const currentHeightScore = Math.floor(Math.abs(Math.min(0, player.y - (GH - 40))) / 5);
-    if (currentHeightScore > score) score = currentHeightScore;
+    if (currentHeightScore > score) {
+        const diff = currentHeightScore - score;
+        score = currentHeightScore;
+        if (score % 20 === 0) addCoins(1);
+    }
 
     for (let p of platforms) {
         if (p.type === 'MOVE') {
@@ -767,9 +1310,10 @@ function updateClimbGame() {
         if (!s.collected) {
             const dx = (player.x + player.w/2) - s.x;
             const dy = (player.y + player.h/2) - s.y;
-            if (Math.hypot(dx, dy) < player.w/2 + s.r + 3) {
+            if (Math.hypot(dx, dy) < player.w/2 + s.r + 4) {
                 s.collected = true;
-                score += 25;
+                score += activeRunPerks.starDouble ? 50 : 25;
+                addCoins(5);
                 sfx.playCoin();
                 createParticles(s.x, s.y, 12, '#fde047', true);
             }
@@ -780,25 +1324,33 @@ function updateClimbGame() {
     updateParticles();
 
     if (player.y - cameraY > GH + 15) {
-        sfx.playDead();
-        saveHighScore();
-        gameState = 'OVER';
+        if (activeRunPerks.shield) {
+            activeRunPerks.shield = false;
+            player.vy = -8.2;
+            sfx.playCheat();
+            showToast('🛡️ 冰晶护盾已触发! 紧急弹射');
+        } else {
+            sfx.playDead();
+            saveHighScore();
+            gameState = 'OVER';
+        }
     }
 }
 
 function drawClimbGame() {
     drawBackground();
+    const sk = SKINS[shopData.activeSkin] || SKINS.skin_ice;
 
     for (let p of platforms) {
         if (p.broken) continue;
         const py = p.y - cameraY;
         
         if (p.type === 'NORMAL') {
-            ctx.fillStyle = '#38bdf8';
+            ctx.fillStyle = sk.accent;
             ctx.beginPath();
             ctx.roundRect(p.x, py, p.w, p.h, 3);
             ctx.fill();
-            ctx.fillStyle = '#e0f2fe';
+            ctx.fillStyle = sk.primary;
             ctx.beginPath();
             ctx.roundRect(p.x, py, p.w, 3, [3, 3, 0, 0]);
             ctx.fill();
@@ -835,7 +1387,7 @@ function drawClimbGame() {
     drawHUD();
 }
 
-/* ================= 游戏 1: GLACIER BREAKER (冰川弹球) ================= */
+/* ================= 游戏 1: GLACIER BREAKER (冰川弹球 + AI托管) ================= */
 let paddle;
 let balls = [];
 let bricks = [];
@@ -867,16 +1419,18 @@ function buildBrickGrid(level) {
 }
 
 function initBreakerGame() {
+    consumeRunItems();
     score = 0;
     breakerLevel = 1;
     particles = [];
     drops = [];
+    const pw = activeRunPerks.wide ? 62 : 44;
     paddle = {
-        w: 44,
+        w: pw,
         h: 7,
-        x: GW / 2 - 22,
+        x: GW / 2 - pw / 2,
         y: GH - 18,
-        speed: 3.8,
+        speed: 3.9,
         magnet: false
     };
     balls = [{
@@ -893,18 +1447,35 @@ function initBreakerGame() {
 function updateBreakerGame() {
     frameCount++;
 
-    // 挡板丝滑跟手移动
-    if (Math.abs(analogX) > 0.05) {
-        paddle.x += analogX * paddle.speed * 1.15;
-    } else if (keys.LEFT) {
-        paddle.x -= paddle.speed;
-    } else if (keys.RIGHT) {
-        paddle.x += paddle.speed;
+    // AI 自动接球与自动发球逻辑
+    if (autoPlay) {
+        paddle.magnet = true;
+        let targetBall = null;
+        for (let b of balls) {
+            if (b.stuck) {
+                b.stuck = false;
+                b.vy = -2.7;
+                b.vx = (Math.random() - 0.5) * 2.4 || 1.6;
+                sfx.playJump();
+            }
+            if (!targetBall || b.y > targetBall.y) targetBall = b;
+        }
+        if (targetBall) {
+            const targetX = targetBall.x - paddle.w / 2;
+            paddle.x += (targetX - paddle.x) * 0.35;
+        }
+    } else {
+        if (Math.abs(analogX) > 0.05) {
+            paddle.x += analogX * paddle.speed * 1.15;
+        } else if (keys.LEFT) {
+            paddle.x -= paddle.speed;
+        } else if (keys.RIGHT) {
+            paddle.x += paddle.speed;
+        }
+        paddle.magnet = keys.B;
     }
-    paddle.x = Math.max(6, Math.min(GW - paddle.w - 6, paddle.x));
 
-    // B键按住激活冰磁引力 (吸引掉落的道具与微调回球)
-    paddle.magnet = keys.B;
+    paddle.x = Math.max(6, Math.min(GW - paddle.w - 6, paddle.x));
 
     // A键或UP键发射粘在挡板上的冰球
     if (justPressed.A || keys.UP) {
@@ -918,7 +1489,6 @@ function updateBreakerGame() {
         }
     }
 
-    // 更新冰球
     for (let b of balls) {
         if (b.stuck) {
             b.x = paddle.x + paddle.w / 2;
@@ -929,7 +1499,6 @@ function updateBreakerGame() {
         b.x += b.vx;
         b.y += b.vy;
 
-        // 墙壁碰撞
         if (b.x - b.r < 4) {
             b.x = 4 + b.r;
             b.vx *= -1;
@@ -945,7 +1514,6 @@ function updateBreakerGame() {
             sfx.playBounce();
         }
 
-        // 挡板碰撞
         if (b.vy > 0 &&
             b.x + b.r >= paddle.x &&
             b.x - b.r <= paddle.x + paddle.w &&
@@ -961,7 +1529,6 @@ function updateBreakerGame() {
             createParticles(b.x, paddle.y, 6, '#38bdf8', false);
         }
 
-        // 冰砖碰撞
         for (let br of bricks) {
             if (br.hp <= 0) continue;
             if (b.x + b.r > br.x && b.x - b.r < br.x + br.w &&
@@ -969,11 +1536,11 @@ function updateBreakerGame() {
                 
                 br.hp--;
                 b.vy *= -1;
-                score += 15;
+                score += activeRunPerks.starDouble ? 30 : 15;
+                addCoins(2);
                 sfx.playBounce();
                 createParticles(br.x + br.w / 2, br.y + br.h / 2, 8, br.color, false);
 
-                // 几率掉落双倍冰球或加分星尘
                 if (br.hp <= 0 && Math.random() < 0.28) {
                     drops.push({
                         x: br.x + br.w / 2,
@@ -985,9 +1552,16 @@ function updateBreakerGame() {
                 break;
             }
         }
+
+        // 护盾反弹底线漏球
+        if (b.y + b.r > GH - 4 && activeRunPerks.shield) {
+            activeRunPerks.shield = false;
+            b.vy = -Math.abs(b.vy);
+            sfx.playCheat();
+            showToast('🛡️ 冰晶护盾救回冰球!');
+        }
     }
 
-    // 过滤掉落底部的球
     balls = balls.filter(b => b.y - b.r <= GH + 10);
     if (balls.length === 0) {
         sfx.playDead();
@@ -996,7 +1570,6 @@ function updateBreakerGame() {
         return;
     }
 
-    // 道具掉落更新
     for (let d of drops) {
         d.y += d.vy;
         if (paddle.magnet) {
@@ -1019,17 +1592,18 @@ function updateBreakerGame() {
                 });
                 createParticles(paddle.x + paddle.w/2, paddle.y, 10, '#38bdf8', false);
             } else {
-                score += 50;
+                score += activeRunPerks.starDouble ? 100 : 50;
+                addCoins(8);
                 createParticles(paddle.x + paddle.w/2, paddle.y, 12, '#fde047', false);
             }
         }
     }
     drops = drops.filter(d => !d.collected && d.y < GH + 10);
 
-    // 过关检测
     if (bricks.every(br => br.hp <= 0)) {
         breakerLevel++;
         score += 100;
+        addCoins(15);
         sfx.playCoin();
         buildBrickGrid(breakerLevel);
         balls = [{
@@ -1047,8 +1621,17 @@ function updateBreakerGame() {
 
 function drawBreakerGame() {
     drawBackground();
+    const sk = SKINS[shopData.activeSkin] || SKINS.skin_ice;
 
-    // 绘制冰砖
+    if (activeRunPerks.shield) {
+        ctx.strokeStyle = 'rgba(52, 211, 153, 0.7)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, GH - 3);
+        ctx.lineTo(GW, GH - 3);
+        ctx.stroke();
+    }
+
     for (let br of bricks) {
         if (br.hp <= 0) continue;
         ctx.fillStyle = br.color;
@@ -1056,7 +1639,6 @@ function drawBreakerGame() {
         ctx.roundRect(br.x, br.y, br.w, br.h, 2.5);
         ctx.fill();
 
-        // 冰砖高光
         ctx.fillStyle = 'rgba(255,255,255,0.65)';
         ctx.fillRect(br.x + 2, br.y + 1.5, br.w - 4, 2);
 
@@ -1067,7 +1649,6 @@ function drawBreakerGame() {
         }
     }
 
-    // 绘制掉落道具
     for (let d of drops) {
         ctx.save();
         ctx.translate(d.x, d.y);
@@ -1082,21 +1663,19 @@ function drawBreakerGame() {
         ctx.restore();
     }
 
-    // 绘制冰川挡板
-    ctx.fillStyle = paddle.magnet ? '#f472b6' : '#38bdf8';
+    ctx.fillStyle = paddle.magnet ? '#f472b6' : sk.paddle;
     ctx.beginPath();
     ctx.roundRect(paddle.x, paddle.y, paddle.w, paddle.h, 3.5);
     ctx.fill();
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = sk.primary;
     ctx.fillRect(paddle.x + 4, paddle.y + 1.5, paddle.w - 8, 2);
 
-    // 绘制弹球
     for (let b of balls) {
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = sk.primary;
         ctx.beginPath();
         ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#38bdf8';
+        ctx.fillStyle = sk.accent;
         ctx.beginPath();
         ctx.arc(b.x - 1, b.y - 1, 1.5, 0, Math.PI * 2);
         ctx.fill();
@@ -1111,6 +1690,234 @@ function drawBreakerGame() {
 
     drawParticles();
     drawHUD();
+}
+
+/* ================= 游戏 2: AURORA DEFENDER (全新第3款小游戏：极光战机) ================= */
+let fighter;
+let bullets = [];
+let enemies = [];
+let spaceGems = [];
+
+function initDefenderGame() {
+    consumeRunItems();
+    score = 0;
+    particles = [];
+    bullets = [];
+    enemies = [];
+    spaceGems = [];
+    fighter = {
+        x: GW / 2,
+        y: GH - 28,
+        w: 16,
+        h: 16,
+        speed: 3.2,
+        fireCool: 0,
+        novaCool: 0,
+        hp: activeRunPerks.shield ? 4 : 3
+    };
+}
+
+function updateDefenderGame() {
+    frameCount++;
+    const sk = SKINS[shopData.activeSkin] || SKINS.skin_ice;
+
+    // 秘籍 AI 自动操作：自动瞄准最近陨石敌机 + 紧急规避
+    if (autoPlay) {
+        let danger = null;
+        let target = null;
+        for (let e of enemies) {
+            if (e.y > fighter.y - 48 && Math.abs(e.x - fighter.x) < 22) {
+                danger = e;
+            }
+            if (!target || e.y > target.y) target = e;
+        }
+        if (danger) {
+            const dir = fighter.x < GW / 2 ? 1 : -1;
+            fighter.x += dir * fighter.speed;
+        } else if (target) {
+            fighter.x += Math.max(-fighter.speed, Math.min(fighter.speed, (target.x - fighter.x) * 0.25));
+        }
+        fighter.y += ((GH - 30) - fighter.y) * 0.1;
+    } else {
+        if (Math.abs(analogX) > 0.05 || Math.abs(analogY) > 0.05) {
+            fighter.x += analogX * fighter.speed * 1.1;
+            fighter.y += analogY * fighter.speed * 1.1;
+        } else {
+            if (keys.LEFT) fighter.x -= fighter.speed;
+            if (keys.RIGHT) fighter.x += fighter.speed;
+            if (keys.UP) fighter.y -= fighter.speed;
+            if (keys.DOWN) fighter.y += fighter.speed;
+        }
+    }
+
+    fighter.x = Math.max(14, Math.min(GW - 14, fighter.x));
+    fighter.y = Math.max(36, Math.min(GH - 16, fighter.y));
+
+    // 自动连发极光脉冲 + A键加速射击
+    if (fighter.fireCool > 0) fighter.fireCool--;
+    if ((keys.A || autoPlay || frameCount % 12 === 0) && fighter.fireCool <= 0) {
+        fighter.fireCool = 8;
+        sfx.playLaser();
+        if (activeRunPerks.wide) {
+            bullets.push({ x: fighter.x - 6, y: fighter.y - 8, vy: -5.2, color: sk.accent });
+            bullets.push({ x: fighter.x + 6, y: fighter.y - 8, vy: -5.2, color: sk.accent });
+        } else {
+            bullets.push({ x: fighter.x, y: fighter.y - 9, vy: -5.2, color: sk.accent });
+        }
+    }
+
+    // B键 (非AI时) 释放全屏冰暴清屏技能
+    if (fighter.novaCool > 0) fighter.novaCool--;
+    if (!autoPlay && justPressed.B && fighter.novaCool <= 0) {
+        fighter.novaCool = 150;
+        sfx.playDash();
+        createParticles(GW / 2, GH / 2, 24, '#38bdf8', false);
+        enemies.forEach(e => {
+            e.hp -= 2;
+            if (e.hp <= 0) {
+                score += 20;
+                createParticles(e.x, e.y, 8, e.color, false);
+            }
+        });
+    }
+
+    // 刷新冰陨石与外星冰虫
+    if (frameCount % Math.max(18, 40 - Math.floor(score / 180)) === 0) {
+        const isElite = Math.random() < 0.25;
+        enemies.push({
+            x: 16 + Math.random() * (GW - 32),
+            y: 16,
+            r: isElite ? 9 : 6.5,
+            hp: isElite ? 3 : 1,
+            vy: (isElite ? 0.9 : 1.4) + Math.min(1.2, score / 1000),
+            vx: (Math.random() - 0.5) * 0.8,
+            color: isElite ? '#f472b6' : '#38bdf8'
+        });
+    }
+
+    for (let b of bullets) b.y += b.vy;
+    bullets = bullets.filter(b => b.y > 16);
+
+    for (let e of enemies) {
+        e.x += e.vx;
+        e.y += e.vy;
+        if (e.x < 12 || e.x > GW - 12) e.vx *= -1;
+
+        // 子弹命中检测
+        for (let b of bullets) {
+            if (!b.hit && Math.hypot(b.x - e.x, b.y - e.y) < e.r + 3) {
+                b.hit = true;
+                e.hp--;
+                if (e.hp <= 0) {
+                    score += activeRunPerks.starDouble ? 40 : 20;
+                    addCoins(3);
+                    sfx.playBounce();
+                    createParticles(e.x, e.y, 10, e.color, false);
+                    if (Math.random() < 0.35) {
+                        spaceGems.push({ x: e.x, y: e.y, vy: 1.2 });
+                    }
+                }
+                break;
+            }
+        }
+
+        // 与战机碰撞检测
+        if (e.hp > 0 && Math.hypot(e.x - fighter.x, e.y - fighter.y) < e.r + 7) {
+            e.hp = 0;
+            fighter.hp--;
+            sfx.playDead();
+            createParticles(fighter.x, fighter.y, 14, '#fb7185', false);
+            if (fighter.hp <= 0) {
+                saveHighScore();
+                gameState = 'OVER';
+                return;
+            }
+        }
+    }
+    bullets = bullets.filter(b => !b.hit);
+    enemies = enemies.filter(e => e.hp > 0 && e.y < GH + 12);
+
+    // 收集掉落星尘宝石
+    for (let g of spaceGems) {
+        g.y += g.vy;
+        if (autoPlay || keys.B) {
+            g.x += (fighter.x - g.x) * 0.08;
+        }
+        if (Math.hypot(g.x - fighter.x, g.y - fighter.y) < 13) {
+            g.collected = true;
+            score += activeRunPerks.starDouble ? 60 : 30;
+            addCoins(6);
+            sfx.playCoin();
+            createParticles(g.x, g.y, 8, '#fde047', false);
+        }
+    }
+    spaceGems = spaceGems.filter(g => !g.collected && g.y < GH + 10);
+
+    updateParticles();
+}
+
+function drawDefenderGame() {
+    drawBackground();
+    const sk = SKINS[shopData.activeSkin] || SKINS.skin_ice;
+
+    // 绘制星尘宝石
+    for (let g of spaceGems) {
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.arc(g.x, g.y, 3.5, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // 绘制子弹
+    for (let b of bullets) {
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.x - 1.5, b.y - 4, 3, 8);
+    }
+
+    // 绘制敌方冰陨石
+    for (let e of enemies) {
+        ctx.save();
+        ctx.translate(e.x, e.y);
+        ctx.rotate(frameCount * 0.04);
+        ctx.fillStyle = e.color;
+        ctx.beginPath();
+        ctx.roundRect(-e.r, -e.r, e.r * 2, e.r * 2, 3);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(-e.r * 0.4, -e.r * 0.4, e.r * 0.8, e.r * 0.8);
+        ctx.restore();
+    }
+
+    // 绘制极光战机
+    ctx.save();
+    ctx.translate(fighter.x, fighter.y);
+    ctx.fillStyle = sk.primary;
+    ctx.beginPath();
+    ctx.moveTo(0, -10);
+    ctx.lineTo(10, 8);
+    ctx.lineTo(0, 4);
+    ctx.lineTo(-10, 8);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = sk.accent;
+    ctx.beginPath();
+    ctx.arc(0, -1, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 尾部推进火焰
+    ctx.fillStyle = frameCount % 4 < 2 ? '#fde047' : '#f43f5e';
+    ctx.fillRect(-2, 6, 4, 4 + (frameCount % 3));
+    ctx.restore();
+
+    drawParticles();
+    drawHUD();
+
+    // 绘制战机护盾生命值
+    ctx.fillStyle = '#fb7185';
+    ctx.font = '7px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.fillText('♥'.repeat(Math.max(0, fighter.hp)), GW / 2, 12);
 }
 
 /* ================= 公共渲染与状态机 ================= */
@@ -1151,7 +1958,7 @@ function drawBackground() {
 
     ctx.fillStyle = 'rgba(224, 242, 254, 0.35)';
     for (let s of bgSnow) {
-        if (gameState === 'PLAY') {
+        if (gameState === 'PLAY' || systemView === 'HOME') {
             s.y += s.s;
             if (s.y > GH) s.y = 0;
         }
@@ -1162,35 +1969,47 @@ function drawBackground() {
 }
 
 function drawHUD() {
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.7)';
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.72)';
     ctx.fillRect(0, 0, GW, 18);
     ctx.fillStyle = '#38bdf8';
-    ctx.font = '8px "Press Start 2P"';
+    ctx.font = '7.5px "Press Start 2P"';
     ctx.textAlign = 'left';
-    ctx.fillText(`SCORE:${score}`, 6, 12);
+    ctx.fillText(`S:${score}`, 6, 12);
     ctx.textAlign = 'right';
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillText(`HI:${highScores[currentGame]}`, GW - 6, 12);
+    ctx.fillStyle = '#fde047';
+    ctx.fillText(`★${shopData.coins}`, GW - 6, 12);
+
+    // 底部 AI 自动托管状态横幅
+    if (autoPlay) {
+        ctx.fillStyle = 'rgba(168, 85, 247, 0.82)';
+        ctx.beginPath();
+        ctx.roundRect(GW / 2 - 68, GH - 17, 136, 14, 4);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '6px "Press Start 2P"';
+        ctx.textAlign = 'center';
+        ctx.fillText('🤖 AI AUTO [B:CANCEL]', GW / 2, GH - 7.5);
+    }
 }
 
 function drawTitleScreen() {
     drawBackground();
     frameCount++;
 
-    // 顶部卡带指示栏
     ctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
     ctx.fillRect(0, 0, GW, 20);
     ctx.fillStyle = '#fde047';
     ctx.font = '7px "Press Start 2P"';
     ctx.textAlign = 'center';
-    ctx.fillText(`◀ GAME ${currentGame + 1}/2: ${currentGame === 0 ? 'CLIMB' : 'BREAKER'} ▶`, GW / 2, 13);
+    const codes = ['CLIMB', 'BREAKER', 'DEFENDER'];
+    ctx.fillText(`CARTRIDGE 0${currentGame + 1}: ${codes[currentGame]}`, GW / 2, 13);
 
-    // 标题框
-    ctx.fillStyle = currentGame === 0 ? 'rgba(56, 189, 248, 0.16)' : 'rgba(244, 114, 182, 0.16)';
-    ctx.strokeStyle = currentGame === 0 ? '#38bdf8' : '#f472b6';
+    const boxColors = ['#38bdf8', '#f472b6', '#a78bfa'];
+    ctx.fillStyle = 'rgba(30, 41, 59, 0.65)';
+    ctx.strokeStyle = boxColors[currentGame];
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.roundRect(22, 32, GW - 44, 68, 8);
+    ctx.roundRect(22, 30, GW - 44, 66, 8);
     ctx.fill();
     ctx.stroke();
 
@@ -1198,110 +2017,126 @@ function drawTitleScreen() {
     if (currentGame === 0) {
         ctx.fillStyle = '#e0f2fe';
         ctx.font = '14px "Press Start 2P"';
-        ctx.fillText('FROSTY', GW / 2, 58);
+        ctx.fillText('FROSTY', GW / 2, 55);
         ctx.fillStyle = '#38bdf8';
-        ctx.fillText('CLIMB', GW / 2, 80);
+        ctx.fillText('CLIMB', GW / 2, 77);
 
-        // 小冰灵跳跃预览
         const bounceY = Math.abs(Math.sin(frameCount * 0.08)) * 12;
-        ctx.fillStyle = '#ffffff';
+        const sk = SKINS[shopData.activeSkin] || SKINS.skin_ice;
+        ctx.fillStyle = sk.primary;
         ctx.beginPath();
-        ctx.roundRect(GW/2 - 8, 136 - bounceY, 16, 16, [7, 7, 3, 3]);
+        ctx.roundRect(GW/2 - 8, 132 - bounceY, 16, 16, [7, 7, 3, 3]);
         ctx.fill();
         ctx.fillStyle = '#0f172a';
-        ctx.fillRect(GW/2 - 3, 141 - bounceY, 2, 3);
-        ctx.fillRect(GW/2 + 3, 141 - bounceY, 2, 3);
-    } else {
+        ctx.fillRect(GW/2 - 3, 137 - bounceY, 2, 3);
+        ctx.fillRect(GW/2 + 3, 137 - bounceY, 2, 3);
+    } else if (currentGame === 1) {
         ctx.fillStyle = '#fce7f3';
         ctx.font = '13px "Press Start 2P"';
-        ctx.fillText('GLACIER', GW / 2, 58);
+        ctx.fillText('GLACIER', GW / 2, 55);
         ctx.fillStyle = '#f472b6';
-        ctx.fillText('BREAKER', GW / 2, 80);
+        ctx.fillText('BREAKER', GW / 2, 77);
 
-        // 挡板弹球预览动画
         const px = GW / 2 + Math.sin(frameCount * 0.06) * 28;
         ctx.fillStyle = '#38bdf8';
         ctx.beginPath();
-        ctx.roundRect(px - 20, 145, 40, 6, 3);
+        ctx.roundRect(px - 20, 142, 40, 6, 3);
         ctx.fill();
-        const by = 138 - Math.abs(Math.cos(frameCount * 0.12)) * 18;
+        const by = 135 - Math.abs(Math.cos(frameCount * 0.12)) * 18;
         ctx.fillStyle = '#ffffff';
         ctx.beginPath();
         ctx.arc(px, by, 4, 0, Math.PI * 2);
+        ctx.fill();
+    } else {
+        ctx.fillStyle = '#f3e8ff';
+        ctx.font = '13px "Press Start 2P"';
+        ctx.fillText('AURORA', GW / 2, 55);
+        ctx.fillStyle = '#a78bfa';
+        ctx.fillText('DEFENDER', GW / 2, 77);
+
+        const fx = GW / 2 + Math.sin(frameCount * 0.07) * 24;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.moveTo(fx, 118);
+        ctx.lineTo(fx + 10, 136);
+        ctx.lineTo(fx, 132);
+        ctx.lineTo(fx - 10, 136);
+        ctx.closePath();
         ctx.fill();
     }
 
     if (Math.floor(frameCount / 25) % 2 === 0) {
         ctx.fillStyle = '#fde047';
         ctx.font = '8px "Press Start 2P"';
-        ctx.fillText('PRESS [A] TO START', GW / 2, 180);
+        ctx.fillText('PRESS [A] TO START', GW / 2, 174);
     }
 
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '7px "Press Start 2P"';
-    ctx.fillText(currentGame === 0 ? '[A] JUMP   [B] DASH' : '[A] LAUNCH [B] MAGNET', GW / 2, 198);
+    ctx.font = '6.5px "Press Start 2P"';
+    const tips = ['[A] JUMP   [B] DASH', '[A] LAUNCH [B] MAGNET', '[A] LASER  [B] ICE NOVA'];
+    ctx.fillText(tips[currentGame], GW / 2, 194);
     ctx.fillStyle = '#38bdf8';
-    ctx.fillText('[GAME] SWITCH CARTRIDGE', GW / 2, 214);
+    ctx.fillText('[HOME] OS DESKTOP & SHOP', GW / 2, 212);
+}
+
+function drawActiveGameScene() {
+    if (currentGame === 0) drawClimbGame();
+    else if (currentGame === 1) drawBreakerGame();
+    else drawDefenderGame();
 }
 
 function drawGameOver() {
-    if (currentGame === 0) drawClimbGame();
-    else drawBreakerGame();
+    drawActiveGameScene();
 
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.78)';
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.8)';
     ctx.fillRect(0, 0, GW, GH);
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#fb7185';
     ctx.font = '14px "Press Start 2P"';
-    ctx.fillText('GAME OVER', GW / 2, 78);
+    ctx.fillText('GAME OVER', GW / 2, 72);
 
     ctx.fillStyle = '#e0f2fe';
     ctx.font = '9px "Press Start 2P"';
-    ctx.fillText(`SCORE: ${score}`, GW / 2, 110);
+    ctx.fillText(`SCORE: ${score}`, GW / 2, 102);
     
     ctx.fillStyle = '#fde047';
-    ctx.fillText(`BEST:  ${highScores[currentGame]}`, GW / 2, 130);
+    ctx.fillText(`BEST:  ${highScores[currentGame]}`, GW / 2, 122);
+
+    ctx.fillStyle = '#34d399';
+    ctx.font = '7px "Press Start 2P"';
+    ctx.fillText(`STARS WALLET: ★${shopData.coins}`, GW / 2, 142);
 
     if (Math.floor(++frameCount / 25) % 2 === 0) {
         ctx.fillStyle = '#38bdf8';
         ctx.font = '8px "Press Start 2P"';
-        ctx.fillText('PRESS [A] TO RETRY', GW / 2, 168);
+        ctx.fillText('PRESS [A] TO RETRY', GW / 2, 172);
     }
     ctx.fillStyle = '#94a3b8';
-    ctx.font = '7px "Press Start 2P"';
-    ctx.fillText('PRESS [GAME] SWITCH', GW / 2, 192);
+    ctx.font = '6.5px "Press Start 2P"';
+    ctx.fillText('PRESS [HOME] DESKTOP/SHOP', GW / 2, 196);
 }
 
 function drawPause() {
-    if (currentGame === 0) drawClimbGame();
-    else drawBreakerGame();
+    drawActiveGameScene();
 
     ctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
     ctx.fillRect(0, 0, GW, GH);
     ctx.textAlign = 'center';
     ctx.fillStyle = '#e0f2fe';
     ctx.font = '12px "Press Start 2P"';
-    ctx.fillText('PAUSED', GW / 2, GH / 2 - 4);
+    ctx.fillText('PAUSED', GW / 2, GH / 2 - 8);
     ctx.fillStyle = '#38bdf8';
     ctx.font = '7px "Press Start 2P"';
-    ctx.fillText('PRESS [START] RESUME', GW / 2, GH / 2 + 18);
-}
-
-function switchGame(nextIndex) {
-    sfx.init();
-    sfx.playSwitch();
-    currentGame = typeof nextIndex === 'number' ? nextIndex : (currentGame + 1) % 2;
-    gameState = 'TITLE';
-    switchBannerTimer = 60;
-
-    document.getElementById('bezel-game-label').textContent = `ICE POCKET · 0${currentGame + 1}`;
-    document.getElementById('game-title-badge').textContent = `切换: ${GAME_NAMES[currentGame]}`;
+    ctx.fillText('[START] RESUME', GW / 2, GH / 2 + 14);
+    ctx.fillStyle = '#fde047';
+    ctx.fillText('[HOME] EXIT TO DESKTOP', GW / 2, GH / 2 + 30);
 }
 
 function initActiveGame() {
     if (currentGame === 0) initClimbGame();
-    else initBreakerGame();
+    else if (currentGame === 1) initBreakerGame();
+    else initDefenderGame();
 }
 
 // 主循环
@@ -1311,55 +2146,69 @@ function loop() {
         sfx.toggleMute();
     }
     if (justPressed.GAME) {
-        switchGame();
+        openHomeDesktop();
     }
 
-    if (gameState === 'TITLE') {
-        if (justPressed.LEFT || justPressed.RIGHT) {
-            switchGame();
-        } else if (justPressed.A || justPressed.START) {
-            sfx.init();
-            sfx.playCoin();
-            initActiveGame();
-            gameState = 'PLAY';
-        }
-        drawTitleScreen();
-    } else if (gameState === 'PLAY') {
-        if (justPressed.START) {
-            gameState = 'PAUSE';
-            sfx.playCoin();
-        } else {
-            if (currentGame === 0) {
-                updateClimbGame();
-                if (gameState === 'PLAY') drawClimbGame();
-            } else {
-                updateBreakerGame();
-                if (gameState === 'PLAY') drawBreakerGame();
+    if (systemView === 'HOME') {
+        updateHomeDesktop();
+        drawHomeDesktop();
+    } else if (systemView === 'SHOP') {
+        updateShopScreen();
+        drawShopScreen();
+    } else if (systemView === 'GAME') {
+        if (gameState === 'TITLE') {
+            if (justPressed.B) {
+                openHomeDesktop();
+            } else if (justPressed.A || justPressed.START) {
+                sfx.init();
+                sfx.playCoin();
+                initActiveGame();
+                gameState = 'PLAY';
             }
+            drawTitleScreen();
+        } else if (gameState === 'PLAY') {
+            if (justPressed.START) {
+                gameState = 'PAUSE';
+                sfx.playCoin();
+            } else {
+                if (currentGame === 0) updateClimbGame();
+                else if (currentGame === 1) updateBreakerGame();
+                else updateDefenderGame();
+
+                if (gameState === 'PLAY') drawActiveGameScene();
+            }
+        } else if (gameState === 'PAUSE') {
+            if (justPressed.START || justPressed.A) {
+                gameState = 'PLAY';
+            }
+            drawPause();
+        } else if (gameState === 'OVER') {
+            if (justPressed.A || justPressed.START) {
+                sfx.playJump();
+                initActiveGame();
+                gameState = 'PLAY';
+            } else if (justPressed.B) {
+                openHomeDesktop();
+            }
+            drawGameOver();
         }
-    } else if (gameState === 'PAUSE') {
-        if (justPressed.START || justPressed.A) {
-            gameState = 'PLAY';
-        }
-        drawPause();
-    } else if (gameState === 'OVER') {
-        if (justPressed.A || justPressed.START) {
-            sfx.playJump();
-            initActiveGame();
-            gameState = 'PLAY';
-        }
-        drawGameOver();
     }
 
-    // 切换游戏提示横幅
-    if (switchBannerTimer > 0) {
-        switchBannerTimer--;
-        ctx.fillStyle = 'rgba(14, 165, 233, 0.9)';
-        ctx.fillRect(20, GH / 2 - 14, GW - 40, 24);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '8px "Press Start 2P"';
+    // 全局浮动通知横幅 (秘籍激活/购买提示)
+    if (toastTimer > 0) {
+        toastTimer--;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(14, GH / 2 - 16, GW - 28, 28, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#fde047';
+        ctx.font = 'bold 10px "Fredoka", sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(`CARTRIDGE 0${currentGame + 1} LOADED`, GW / 2, GH / 2 + 2);
+        ctx.fillText(toastMsg, GW / 2, GH / 2 + 2);
     }
 
     for (let k in justPressed) justPressed[k] = false;
@@ -1367,14 +2216,44 @@ function loop() {
 }
 
 /**
- * 3. 人体工学跟手操控系统 (支持灵动摇杆 + 滑动十字键 + 顶部快捷栏)
+ * 3. 十字键秘籍检测 (↑ ↓ ↑ ← → ← →) + 按 B 取消自动操作
  */
+function recordDirectionForCheat(dir) {
+    cheatBuffer.push(dir);
+    if (cheatBuffer.length > CHEAT_SEQUENCE.length) {
+        cheatBuffer.shift();
+    }
+    if (cheatBuffer.length === CHEAT_SEQUENCE.length &&
+        cheatBuffer.every((v, i) => v === CHEAT_SEQUENCE[i])) {
+        autoPlay = true;
+        cheatBuffer = [];
+        sfx.init();
+        sfx.playCheat();
+        updateLedIndicator();
+        showToast('✨ 秘籍激活: AI自动托管已开启 (按B取消)', 110);
+    }
+}
+
 function triggerButton(key, isDown) {
     if (isDown) {
         sfx.init();
         if (!keys[key]) {
             justPressed[key] = true;
             if (navigator.vibrate) navigator.vibrate(10);
+
+            // 记录方向输入以触发 (上下上左右左右) 秘籍
+            if (['UP', 'DOWN', 'LEFT', 'RIGHT'].includes(key)) {
+                recordDirectionForCheat(key);
+            }
+
+            // 按 B 键立即取消 AI 自动操作模式
+            if (key === 'B' && autoPlay) {
+                autoPlay = false;
+                justPressed.B = false; // 避免误触游戏内B键技能或退出
+                sfx.playBounce();
+                updateLedIndicator();
+                showToast('已取消 AI 自动操作模式', 65);
+            }
         }
         keys[key] = true;
     } else {
@@ -1387,6 +2266,36 @@ function triggerButton(key, isDown) {
         else btnEl.classList.remove('active');
     }
 }
+
+// 支持直接触屏点击屏幕上的安卓桌面图标或商店条目
+canvas.addEventListener('pointerdown', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const cx = ((e.clientX - rect.left) / rect.width) * GW;
+    const cy = ((e.clientY - rect.top) / rect.height) * GH;
+
+    if (systemView === 'HOME') {
+        APP_CARDS.forEach((app, idx) => {
+            if (cx >= app.x && cx <= app.x + app.w && cy >= app.y && cy <= app.y + app.h) {
+                homeCursor = idx;
+                launchApp(idx);
+            }
+        });
+    } else if (systemView === 'SHOP') {
+        if (cy >= 27 && cy <= 46) {
+            shopTab = cx < GW / 2 ? 0 : 1;
+            shopCursor = 0;
+            sfx.playBounce();
+        } else if (cy >= 52 && cy <= 196) {
+            const idx = Math.floor((cy - 52) / 36);
+            const itemsInTab = SHOP_CATALOG.filter(it => (shopTab === 0 ? it.type === 'skin' : it.type === 'item'));
+            if (idx >= 0 && idx < itemsInTab.length) {
+                shopCursor = idx;
+                triggerButton('A', true);
+                setTimeout(() => triggerButton('A', false), 80);
+            }
+        }
+    }
+});
 
 // 绑定 AB / START / SELECT / GAME 按钮
 document.querySelectorAll('[data-key]').forEach(btn => {
@@ -1405,7 +2314,7 @@ document.querySelectorAll('[data-key]').forEach(btn => {
     btn.addEventListener('pointercancel', handleUp);
 });
 
-// 灵动跟手摇杆逻辑 (指尖拖动实时映射速度与方向)
+// 灵动跟手摇杆逻辑
 const joyZone = document.getElementById('joystick-zone');
 const joyKnob = document.getElementById('joystick-knob');
 let joyTouchId = null;
@@ -1427,18 +2336,19 @@ function handleJoystickMove(clientX, clientY) {
 
     joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
 
-    // 连续水平跟手量 (-1 到 1)
     analogX = Math.abs(dx) > 5 ? (dx / maxDist) : 0;
+    analogY = Math.abs(dy) > 5 ? (dy / maxDist) : 0;
 
-    triggerButton('LEFT', dx < -10);
-    triggerButton('RIGHT', dx > 10);
-    triggerButton('UP', dy < -16);
-    triggerButton('DOWN', dy > 16);
+    triggerButton('LEFT', dx < -12);
+    triggerButton('RIGHT', dx > 12);
+    triggerButton('UP', dy < -14);
+    triggerButton('DOWN', dy > 14);
 }
 
 function resetJoystick() {
     joyTouchId = null;
     analogX = 0;
+    analogY = 0;
     joyKnob.classList.add('returning');
     joyKnob.style.transform = `translate(0px, 0px)`;
     triggerButton('LEFT', false);
@@ -1470,7 +2380,7 @@ joyZone.addEventListener('pointercancel', (e) => {
     if (joyTouchId === e.pointerId) resetJoystick();
 });
 
-// 经典十字键升级：支持手指不抬起直接滑动切换方向，跟手不卡顿
+// 经典十字键支持滑动连按与秘籍输入
 const dpadZone = document.getElementById('dpad-zone');
 let dpadActive = false;
 
@@ -1486,10 +2396,18 @@ function handleDpadSlide(clientX, clientY) {
         return;
     }
 
-    triggerButton('LEFT', dx < -12);
-    triggerButton('RIGHT', dx > 12);
-    triggerButton('UP', dy < -14);
-    triggerButton('DOWN', dy > 14);
+    // 主方向判定让十字键输入秘籍更精准
+    if (Math.abs(dx) > Math.abs(dy)) {
+        triggerButton('LEFT', dx < -10);
+        triggerButton('RIGHT', dx > 10);
+        triggerButton('UP', false);
+        triggerButton('DOWN', false);
+    } else {
+        triggerButton('UP', dy < -10);
+        triggerButton('DOWN', dy > 10);
+        triggerButton('LEFT', false);
+        triggerButton('RIGHT', false);
+    }
 }
 
 dpadZone.addEventListener('pointerdown', (e) => {
@@ -1511,7 +2429,7 @@ const endDpad = () => {
 dpadZone.addEventListener('pointerup', endDpad);
 dpadZone.addEventListener('pointercancel', endDpad);
 
-// 顶部操作模式切换（灵动摇杆 vs 经典十字键）
+// 顶部操作模式切换（灵动摇杆 vs 十字键）
 let isJoystickMode = true;
 document.getElementById('toggle-ergo-btn').addEventListener('click', () => {
     sfx.init();
@@ -1527,24 +2445,27 @@ document.getElementById('toggle-ergo-btn').addEventListener('click', () => {
         dpadZone.classList.add('hidden');
         shell.classList.add('ergo-mode');
         ergoIcon.textContent = '🕹️';
-        ergoText.textContent = '操作: 灵动摇杆 (跟手)';
+        ergoText.textContent = '操作: 灵动摇杆';
         modeTag.textContent = 'JOYSTICK';
     } else {
         joyZone.classList.add('hidden');
         dpadZone.classList.remove('hidden');
         shell.classList.remove('ergo-mode');
         ergoIcon.textContent = '➕';
-        ergoText.textContent = '操作: 滑动十字键';
+        ergoText.textContent = '操作: 经典十字键';
         modeTag.textContent = 'D-PAD';
     }
 });
 
-// 顶部一键切换游戏按钮
+// 顶部返回桌面与商店快捷按钮
 document.getElementById('switch-game-top').addEventListener('click', () => {
-    switchGame();
+    openHomeDesktop();
+});
+document.getElementById('open-shop-top').addEventListener('click', () => {
+    openShopScreen();
 });
 
-// 绑定电脑端键盘事件
+// 电脑端键盘事件
 const keyMap = {
     'ArrowUp': 'UP', 'KeyW': 'UP',
     'ArrowDown': 'DOWN', 'KeyS': 'DOWN',
@@ -1573,7 +2494,7 @@ window.addEventListener('keyup', (e) => {
     }
 });
 
-// 启动游戏机
+// 启动 ICE OS 游戏机
 requestAnimationFrame(loop);
 
 </script>
