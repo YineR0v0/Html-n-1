@@ -1,986 +1,1580 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>
 
 * {
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
-        }
-        body {
-            font-family: 'Fredoka', sans-serif;
-            background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
-            overflow: hidden;
-            touch-action: none;
-        }
-        .pixel-font {
-            font-family: 'Press Start 2P', monospace;
-        }
-        
-        /* 冰块玻璃拟态主体 */
-        .ice-shell {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.25) 100%);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-top: 2px solid rgba(255, 255, 255, 0.9);
-            border-left: 2px solid rgba(255, 255, 255, 0.8);
-            border-right: 2px solid rgba(255, 255, 255, 0.3);
-            border-bottom: 4px solid rgba(186, 230, 253, 0.6);
-            box-shadow: 
-                0 30px 60px -12px rgba(14, 116, 144, 0.25),
-                inset 0 2px 6px rgba(255, 255, 255, 0.9),
-                inset 0 -8px 16px rgba(186, 230, 253, 0.5),
-                inset 0 0 40px rgba(224, 242, 254, 0.4);
-        }
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Fredoka', sans-serif;
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%);
+    overflow: hidden;
+    touch-action: none;
+    margin: 0;
+    padding: 0;
+}
+.pixel-font {
+    font-family: 'Press Start 2P', monospace;
+}
 
-        /* 内部电路板隐约可见的效果 */
-        .circuit-pattern {
-            background-image: radial-gradient(rgba(14, 165, 233, 0.1) 2px, transparent 2px),
-                              linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px),
-                              linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px);
-            background-size: 20px 20px, 10px 10px, 10px 10px;
-        }
+/* 冰块玻璃拟态主体 */
+.ice-shell {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.28) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-top: 2px solid rgba(255, 255, 255, 0.9);
+    border-left: 2px solid rgba(255, 255, 255, 0.8);
+    border-right: 2px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 4px solid rgba(186, 230, 253, 0.6);
+    box-shadow: 
+        0 30px 60px -12px rgba(14, 116, 144, 0.25),
+        inset 0 2px 6px rgba(255, 255, 255, 0.9),
+        inset 0 -8px 16px rgba(186, 230, 253, 0.5),
+        inset 0 0 40px rgba(224, 242, 254, 0.4);
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 
-        /* 屏幕外框 */
-        .screen-bezel {
-            background: rgba(255, 255, 255, 0.4);
-            box-shadow: 
-                inset 0 3px 6px rgba(14, 116, 144, 0.15),
-                0 2px 4px rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.6);
-        }
+/* 内部电路板隐约可见的效果 */
+.circuit-pattern {
+    background-image: radial-gradient(rgba(14, 165, 233, 0.1) 2px, transparent 2px),
+                      linear-gradient(90deg, rgba(14, 165, 233, 0.05) 1px, transparent 1px),
+                      linear-gradient(rgba(14, 165, 233, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px, 10px 10px, 10px 10px;
+}
 
-        /* 游戏屏幕 */
-        .game-screen {
-            background: #0f172a;
-            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.8);
-        }
+/* 屏幕外框 */
+.screen-bezel {
+    background: rgba(255, 255, 255, 0.45);
+    box-shadow: 
+        inset 0 3px 6px rgba(14, 116, 144, 0.15),
+        0 2px 4px rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+}
 
-        /* 冰块十字键 */
-        .d-pad-container {
-            filter: drop-shadow(0 6px 8px rgba(14, 116, 144, 0.2));
-        }
-        .ice-dpad {
-            background: rgba(255, 255, 255, 0.75);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            box-shadow: inset 0 2px 4px rgba(255,255,255,1), inset 0 -2px 4px rgba(186, 230, 253, 0.8);
-            transition: all 0.08s ease;
-        }
-        .ice-dpad:active, .ice-dpad.active {
-            background: rgba(224, 242, 254, 0.9);
-            transform: scale(0.95);
-            box-shadow: inset 0 2px 5px rgba(14, 116, 144, 0.3);
-        }
+/* 游戏屏幕 */
+.game-screen {
+    background: #0f172a;
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.85);
+}
 
-        /* 糖果色果冻AB键 */
-        .btn-jelly-pink {
-            background: linear-gradient(145deg, rgba(251, 113, 133, 0.85), rgba(225, 29, 72, 0.75));
-            box-shadow: 
-                0 6px 0 rgba(190, 18, 60, 0.6),
-                0 8px 12px rgba(225, 29, 72, 0.3),
-                inset 0 2px 4px rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(255, 228, 230, 0.6);
-            backdrop-filter: blur(4px);
-            transition: all 0.08s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-jelly-pink:active, .btn-jelly-pink.active {
-            transform: translateY(5px);
-            box-shadow: 
-                0 1px 0 rgba(190, 18, 60, 0.6),
-                0 2px 4px rgba(225, 29, 72, 0.3),
-                inset 0 2px 4px rgba(255, 255, 255, 0.6);
-        }
+/* 冰块十字键 */
+.d-pad-container {
+    filter: drop-shadow(0 6px 8px rgba(14, 116, 144, 0.2));
+}
+.ice-dpad {
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: inset 0 2px 4px rgba(255,255,255,1), inset 0 -2px 4px rgba(186, 230, 253, 0.8);
+    transition: all 0.06s ease;
+}
+.ice-dpad:active, .ice-dpad.active {
+    background: rgba(186, 230, 253, 0.95);
+    transform: scale(0.93);
+    box-shadow: inset 0 2px 6px rgba(14, 116, 144, 0.35);
+}
 
-        .btn-jelly-cyan {
-            background: linear-gradient(145deg, rgba(56, 189, 248, 0.85), rgba(2, 132, 199, 0.75));
-            box-shadow: 
-                0 6px 0 rgba(3, 105, 161, 0.6),
-                0 8px 12px rgba(2, 132, 199, 0.3),
-                inset 0 2px 4px rgba(255, 255, 255, 0.8);
-            border: 1px solid rgba(224, 242, 254, 0.6);
-            backdrop-filter: blur(4px);
-            transition: all 0.08s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-jelly-cyan:active, .btn-jelly-cyan.active {
-            transform: translateY(5px);
-            box-shadow: 
-                0 1px 0 rgba(3, 105, 161, 0.6),
-                0 2px 4px rgba(2, 132, 199, 0.3),
-                inset 0 2px 4px rgba(255, 255, 255, 0.6);
-        }
+/* 跟手摇杆样式 */
+.joystick-base {
+    background: radial-gradient(circle, rgba(224,242,254,0.6) 0%, rgba(255,255,255,0.85) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 
+        inset 0 4px 10px rgba(14, 116, 144, 0.2),
+        0 6px 12px rgba(14, 116, 144, 0.15);
+}
+.joystick-stick {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(186, 230, 253, 0.85));
+    border: 2px solid rgba(255, 255, 255, 1);
+    box-shadow: 
+        0 6px 12px rgba(14, 116, 144, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 1);
+    transition: transform 0.05s linear;
+}
+.joystick-stick.returning {
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 
-        /* 功能小胶囊键 */
-        .pill-btn {
-            background: rgba(255, 255, 255, 0.6);
-            box-shadow: 0 3px 0 rgba(148, 163, 184, 0.5), 0 4px 6px rgba(0,0,0,0.05), inset 0 1px 2px white;
-            border: 1px solid rgba(255,255,255,0.8);
-            transition: all 0.08s;
-        }
-        .pill-btn:active, .pill-btn.active {
-            transform: translateY(3px);
-            box-shadow: 0 0px 0 rgba(148, 163, 184, 0.5), inset 0 1px 2px rgba(0,0,0,0.1);
-        }
+/* 糖果色果冻AB键 */
+.btn-jelly-pink {
+    background: linear-gradient(145deg, rgba(251, 113, 133, 0.88), rgba(225, 29, 72, 0.78));
+    box-shadow: 
+        0 6px 0 rgba(190, 18, 60, 0.6),
+        0 8px 12px rgba(225, 29, 72, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 228, 230, 0.6);
+    backdrop-filter: blur(4px);
+    transition: all 0.06s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-jelly-pink:active, .btn-jelly-pink.active {
+    transform: translateY(5px);
+    box-shadow: 
+        0 1px 0 rgba(190, 18, 60, 0.6),
+        0 2px 4px rgba(225, 29, 72, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.6);
+}
 
-        /* 装饰背景气泡 */
-        .bg-bubble {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1));
-            box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
-            backdrop-filter: blur(2px);
-            z-index: 0;
-            animation: float 8s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(5deg); }
-        }
-        
-        /* 扫描线效果 */
-        .scanlines {
-            background: linear-gradient(
-                to bottom,
-                rgba(255,255,255,0),
-                rgba(255,255,255,0) 50%,
-                rgba(0, 0, 0, 0.15) 50%,
-                rgba(0, 0, 0, 0.15)
-            );
-            background-size: 100% 4px;
-        }
+.btn-jelly-cyan {
+    background: linear-gradient(145deg, rgba(56, 189, 248, 0.88), rgba(2, 132, 199, 0.78));
+    box-shadow: 
+        0 6px 0 rgba(3, 105, 161, 0.6),
+        0 8px 12px rgba(2, 132, 199, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(224, 242, 254, 0.6);
+    backdrop-filter: blur(4px);
+    transition: all 0.06s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-jelly-cyan:active, .btn-jelly-cyan.active {
+    transform: translateY(5px);
+    box-shadow: 
+        0 1px 0 rgba(3, 105, 161, 0.6),
+        0 2px 4px rgba(2, 132, 199, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.6);
+}
+
+/* 功能小胶囊键 */
+.pill-btn {
+    background: rgba(255, 255, 255, 0.65);
+    box-shadow: 0 3px 0 rgba(148, 163, 184, 0.5), 0 4px 6px rgba(0,0,0,0.05), inset 0 1px 2px white;
+    border: 1px solid rgba(255,255,255,0.85);
+    transition: all 0.08s;
+}
+.pill-btn:active, .pill-btn.active {
+    transform: translateY(3px);
+    box-shadow: 0 0px 0 rgba(148, 163, 184, 0.5), inset 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* 顶部快捷悬浮栏按钮 */
+.top-pill {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 4px 12px rgba(14, 116, 144, 0.12), inset 0 1px 2px rgba(255, 255, 255, 0.9);
+    transition: all 0.2s ease;
+}
+.top-pill:hover {
+    background: rgba(255, 255, 255, 0.75);
+}
+.top-pill:active {
+    transform: scale(0.95);
+}
+
+/* 人体工学抓握模式样式调整 */
+.ice-shell.ergo-mode {
+    border-radius: 44px;
+}
+.ice-shell.ergo-mode .controls-area {
+    padding-left: 2px;
+    padding-right: 2px;
+    transform: translateY(-6px);
+}
+
+/* 装饰背景气泡 */
+.bg-bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1));
+    box-shadow: inset 0 0 20px rgba(255,255,255,0.5);
+    backdrop-filter: blur(2px);
+    z-index: 0;
+    animation: float 8s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+/* 扫描线效果 */
+.scanlines {
+    background: linear-gradient(
+        to bottom,
+        rgba(255,255,255,0),
+        rgba(255,255,255,0) 50%,
+        rgba(0, 0, 0, 0.15) 50%,
+        rgba(0, 0, 0, 0.15)
+    );
+    background-size: 100% 4px;
+}
 
 </style></head><body>
 
 <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 
 <!-- 背景装饰冰块/气泡 -->
-    <div class="bg-bubble w-64 h-64 top-[-5%] left-[10%]"></div>
-    <div class="bg-bubble w-48 h-48 bottom-[5%] right-[12%]" style="animation-delay: -2s;"></div>
-    <div class="bg-bubble w-32 h-32 top-[20%] right-[20%]" style="animation-delay: -4s;"></div>
-    <div class="bg-bubble w-24 h-24 bottom-[15%] left-[20%]" style="animation-delay: -6s;"></div>
+<div class="bg-bubble w-64 h-64 top-[-5%] left-[10%]"></div>
+<div class="bg-bubble w-48 h-48 bottom-[5%] right-[12%]" style="animation-delay: -2s;"></div>
+<div class="bg-bubble w-32 h-32 top-[20%] right-[20%]" style="animation-delay: -4s;"></div>
+<div class="bg-bubble w-24 h-24 bottom-[15%] left-[20%]" style="animation-delay: -6s;"></div>
 
-    <!-- 游戏机本体 -->
-    <div class="ice-shell circuit-pattern relative z-10 w-[92vw] max-w-[380px] h-[88vh] max-h-[660px] rounded-[42px] rounded-br-[75px] p-6 flex flex-col justify-between">
-        
-        <!-- 顶部机身螺丝与高光装饰 -->
-        <div class="absolute top-4 left-6 w-3 h-3 rounded-full border border-sky-200/60 bg-white/30 shadow-inner flex items-center justify-center"><div class="w-2 h-[1px] bg-sky-300/60 rotate-45"></div></div>
-        <div class="absolute top-4 right-6 w-3 h-3 rounded-full border border-sky-200/60 bg-white/30 shadow-inner flex items-center justify-center"><div class="w-2 h-[1px] bg-sky-300/60 -rotate-12"></div></div>
-        
-        <!-- 顶部凹槽线 -->
-        <div class="w-1/2 h-1.5 mx-auto bg-white/40 rounded-full shadow-inner mb-1"></div>
+<!-- 顶部人体工学与游戏切换控制栏 -->
+<div class="relative z-20 flex items-center space-x-2.5 mb-2.5 px-3">
+    <button id="toggle-ergo-btn" class="top-pill px-3.5 py-1.5 rounded-full text-xs font-bold text-sky-900 flex items-center space-x-1.5 cursor-pointer">
+        <span id="ergo-icon">🕹️</span>
+        <span id="ergo-text">操作: 灵动摇杆 (跟手)</span>
+    </button>
+    <button id="switch-game-top" class="top-pill px-3.5 py-1.5 rounded-full text-xs font-bold text-rose-600 flex items-center space-x-1.5 cursor-pointer">
+        <span>🎮</span>
+        <span id="game-title-badge">切换: 冰晶攀登</span>
+    </button>
+</div>
 
-        <!-- 屏幕区域 -->
-        <div class="screen-bezel w-full h-[46%] rounded-[24px] rounded-br-[42px] p-4 flex flex-col relative">
-            <!-- 电源指示灯与品牌 -->
-            <div class="flex justify-between items-center mb-1.5 px-1">
-                <div class="flex items-center space-x-1.5">
-                    <div id="power-led" class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] transition-colors duration-300"></div>
-                    <span class="text-[9px] font-bold tracking-widest text-sky-900/50">BATTERY</span>
-                </div>
-                <span class="text-[10px] font-bold tracking-wider text-sky-800/60 italic">ICE POCKET</span>
+<!-- 游戏机本体 (整体严格居中，加大屏幕占比) -->
+<div id="console-shell" class="ice-shell ergo-mode circuit-pattern relative z-10 w-[94vw] max-w-[400px] h-[84vh] max-h-[690px] rounded-[42px] rounded-br-[75px] p-5 flex flex-col justify-between">
+    
+    <!-- 顶部机身螺丝与高光装饰 -->
+    <div class="absolute top-3.5 left-5 w-3 h-3 rounded-full border border-sky-200/60 bg-white/30 shadow-inner flex items-center justify-center"><div class="w-2 h-[1px] bg-sky-300/60 rotate-45"></div></div>
+    <div class="absolute top-3.5 right-5 w-3 h-3 rounded-full border border-sky-200/60 bg-white/30 shadow-inner flex items-center justify-center"><div class="w-2 h-[1px] bg-sky-300/60 -rotate-12"></div></div>
+    
+    <!-- 顶部凹槽线 -->
+    <div class="w-1/2 h-1.5 mx-auto bg-white/40 rounded-full shadow-inner mb-1"></div>
+
+    <!-- 屏幕区域 (加大至 56% 高度，收窄边框让视野更大更清晰) -->
+    <div class="screen-bezel w-full h-[56%] rounded-[24px] rounded-br-[38px] p-3 flex flex-col relative">
+        <!-- 电源指示灯与品牌 -->
+        <div class="flex justify-between items-center mb-1 px-1">
+            <div class="flex items-center space-x-1.5">
+                <div id="power-led" class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] transition-colors duration-300"></div>
+                <span class="text-[9px] font-bold tracking-widest text-sky-900/60">BATTERY</span>
             </div>
-
-            <!-- 画布容器 -->
-            <div class="game-screen w-full flex-1 rounded-[12px] relative overflow-hidden">
-                <canvas id="gameCanvas" class="w-full h-full block"></canvas>
-                <div class="scanlines absolute inset-0 pointer-events-none"></div>
-                <!-- 屏幕玻璃反光 -->
-                <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/15 pointer-events-none"></div>
-            </div>
-
-            <!-- 底部Logo -->
-            <div class="text-center mt-2">
-                <span class="text-xs font-extrabold tracking-[0.25em] text-sky-950/40 bg-white/40 px-3 py-0.5 rounded-full shadow-sm border border-white/50">NINTENDO<span class="text-rose-400/70">★</span>ICE</span>
-            </div>
+            <span id="bezel-game-label" class="text-[10px] font-bold tracking-wider text-sky-800/70 italic">ICE POCKET · 01</span>
         </div>
 
-        <!-- 操控区域 (十字键 + AB键) -->
-        <div class="flex justify-between items-center px-2 my-auto pt-2">
+        <!-- 画布容器 -->
+        <div class="game-screen w-full flex-1 rounded-[12px] relative overflow-hidden">
+            <canvas id="gameCanvas" class="w-full h-full block"></canvas>
+            <div class="scanlines absolute inset-0 pointer-events-none"></div>
+            <!-- 屏幕玻璃反光 -->
+            <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/15 pointer-events-none"></div>
+        </div>
+
+        <!-- 底部Logo与屏幕内快捷提示 -->
+        <div class="flex justify-between items-center mt-1.5 px-1">
+            <span class="text-[9px] font-bold text-sky-900/50 tracking-wider">HD PIXEL MATRIX</span>
+            <span class="text-[11px] font-extrabold tracking-[0.2em] text-sky-950/45 bg-white/45 px-2.5 py-0.5 rounded-full shadow-sm border border-white/60">NINTENDO<span class="text-rose-400/80">★</span>ICE</span>
+            <span id="control-mode-tag" class="text-[9px] font-bold text-sky-700/60 tracking-wider">JOYSTICK</span>
+        </div>
+    </div>
+
+    <!-- 操控区域 (支持经典十字键 & 符合人体工学的跟手滑动摇杆切换) -->
+    <div class="controls-area flex justify-between items-center px-2 my-auto pt-1 transition-all duration-300">
+        
+        <!-- 左侧方向控制容器 -->
+        <div class="relative w-36 h-36 flex items-center justify-center">
             
-            <!-- 十字键 (D-Pad) -->
-            <div class="relative w-32 h-32 d-pad-container flex items-center justify-center">
-                <!-- 中枢遮罩，消除拼接缝隙 -->
+            <!-- 模式1: 灵动跟手拇指摇杆 (默认开启，指尖无死角丝滑跟手) -->
+            <div id="joystick-zone" class="w-32 h-32 rounded-full joystick-base relative flex items-center justify-center touch-none cursor-pointer">
+                <!-- 方向指示刻度 -->
+                <div class="absolute top-2 w-1.5 h-1.5 rounded-full bg-sky-400/50"></div>
+                <div class="absolute bottom-2 w-1.5 h-1.5 rounded-full bg-sky-400/50"></div>
+                <div class="absolute left-2 w-1.5 h-1.5 rounded-full bg-sky-400/50"></div>
+                <div class="absolute right-2 w-1.5 h-1.5 rounded-full bg-sky-400/50"></div>
+                
+                <!-- 摇杆帽 -->
+                <div id="joystick-knob" class="w-14 h-14 rounded-full joystick-stick returning flex items-center justify-center pointer-events-none relative">
+                    <div class="w-8 h-8 rounded-full bg-sky-100/70 shadow-inner border border-white/80 flex items-center justify-center">
+                        <div class="w-3 h-1.5 bg-white/90 rounded-full -translate-y-1"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 模式2: 经典冰块十字键 (支援滑动连按，不抬手直接划过换向) -->
+            <div id="dpad-zone" class="hidden relative w-32 h-32 d-pad-container flex items-center justify-center touch-none">
+                <!-- 中枢遮罩 -->
                 <div class="absolute w-10 h-10 bg-[#eef8ff] z-10 pointer-events-none flex items-center justify-center">
                     <div class="w-5 h-5 rounded-full bg-sky-100/80 shadow-inner border border-white"></div>
                 </div>
-                
                 <!-- 上 -->
-                <button id="btn-up" data-key="UP" class="ice-dpad absolute top-0 w-10 h-12 rounded-t-[10px] z-0 flex justify-center pt-2 active:pt-2.5">
-                    <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[8px] border-b-sky-400/70"></div>
+                <button id="btn-up" data-dpad="UP" class="ice-dpad absolute top-0 w-11 h-12 rounded-t-[11px] z-0 flex justify-center pt-2">
+                    <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[8px] border-b-sky-400/70 pointer-events-none"></div>
                 </button>
                 <!-- 下 -->
-                <button id="btn-down" data-key="DOWN" class="ice-dpad absolute bottom-0 w-10 h-12 rounded-b-[10px] z-0 flex justify-center items-end pb-2 active:pb-1.5">
-                    <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-sky-400/70"></div>
+                <button id="btn-down" data-dpad="DOWN" class="ice-dpad absolute bottom-0 w-11 h-12 rounded-b-[11px] z-0 flex justify-center items-end pb-2">
+                    <div class="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-sky-400/70 pointer-events-none"></div>
                 </button>
                 <!-- 左 -->
-                <button id="btn-left" data-key="LEFT" class="ice-dpad absolute left-0 w-12 h-10 rounded-l-[10px] z-0 flex items-center pl-2 active:pl-2.5">
-                    <div class="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[8px] border-r-sky-400/70"></div>
+                <button id="btn-left" data-dpad="LEFT" class="ice-dpad absolute left-0 w-12 h-11 rounded-l-[11px] z-0 flex items-center pl-2">
+                    <div class="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-r-[8px] border-r-sky-400/70 pointer-events-none"></div>
                 </button>
                 <!-- 右 -->
-                <button id="btn-right" data-key="RIGHT" class="ice-dpad absolute right-0 w-12 h-10 rounded-r-[10px] z-0 flex items-center justify-end pr-2 active:pr-1.5">
-                    <div class="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[8px] border-l-sky-400/70"></div>
+                <button id="btn-right" data-dpad="RIGHT" class="ice-dpad absolute right-0 w-12 h-11 rounded-r-[11px] z-0 flex items-center justify-end pr-2">
+                    <div class="w-0 h-0 border-t-[6px] border-t-transparent border-b-[6px] border-b-transparent border-l-[8px] border-l-sky-400/70 pointer-events-none"></div>
                 </button>
             </div>
+        </div>
 
-            <!-- AB 键 (倾斜排列) -->
-            <div class="relative w-32 h-24 flex items-center justify-center -rotate-[24deg] bg-white/20 rounded-full p-2 shadow-inner border border-white/40">
-                <!-- B 键 -->
-                <div class="flex flex-col items-center mr-4 mt-2">
-                    <button id="btn-b" data-key="B" class="btn-jelly-cyan w-12 h-12 rounded-full flex items-center justify-center relative overflow-hidden">
-                        <!-- 果冻高光 -->
-                        <div class="absolute top-1.5 left-2 w-4 h-2 bg-white/70 rounded-full rotate-[-30deg]"></div>
-                    </button>
-                    <span class="text-xs font-bold text-sky-900/60 mt-2 tracking-wider rotate-[24deg]">B</span>
-                </div>
-                <!-- A 键 -->
-                <div class="flex flex-col items-center mb-2">
-                    <button id="btn-a" data-key="A" class="btn-jelly-pink w-12 h-12 rounded-full flex items-center justify-center relative overflow-hidden">
-                        <!-- 果冻高光 -->
-                        <div class="absolute top-1.5 left-2 w-4 h-2 bg-white/70 rounded-full rotate-[-30deg]"></div>
-                    </button>
-                    <span class="text-xs font-bold text-sky-900/60 mt-2 tracking-wider rotate-[24deg]">A</span>
-                </div>
+        <!-- 右侧 AB 键 (加大触控面积 + 符合右手拇指自然弧度布局) -->
+        <div id="ab-pad" class="relative w-36 h-28 flex items-center justify-center -rotate-[22deg] bg-white/25 rounded-full p-2.5 shadow-inner border border-white/50 transition-transform duration-300">
+            <!-- B 键 -->
+            <div class="flex flex-col items-center mr-4 mt-2">
+                <button id="btn-b" data-key="B" class="btn-jelly-cyan w-14 h-14 rounded-full flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute top-1.5 left-2.5 w-4 h-2 bg-white/70 rounded-full rotate-[-30deg] pointer-events-none"></div>
+                </button>
+                <span class="text-xs font-bold text-sky-900/70 mt-1.5 tracking-wider rotate-[22deg] pointer-events-none">B</span>
+            </div>
+            <!-- A 键 -->
+            <div class="flex flex-col items-center mb-2">
+                <button id="btn-a" data-key="A" class="btn-jelly-pink w-14 h-14 rounded-full flex items-center justify-center relative overflow-hidden">
+                    <div class="absolute top-1.5 left-2.5 w-4 h-2 bg-white/70 rounded-full rotate-[-30deg] pointer-events-none"></div>
+                </button>
+                <span class="text-xs font-bold text-sky-900/70 mt-1.5 tracking-wider rotate-[22deg] pointer-events-none">A</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部功能键与扬声器 (新增 GAME 切换胶囊键) -->
+    <div class="relative flex justify-center items-end pb-1 pt-1">
+        <!-- SOUND / GAME / START -->
+        <div class="flex space-x-4">
+            <div class="flex flex-col items-center">
+                <button id="btn-select" data-key="SELECT" class="pill-btn w-9 h-3.5 rounded-full transform -rotate-[20deg]"></button>
+                <span class="text-[8px] font-bold tracking-widest text-sky-900/55 mt-1.5">SOUND</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <button id="btn-game" data-key="GAME" class="pill-btn w-9 h-3.5 rounded-full transform -rotate-[20deg] !bg-sky-200/80 border-sky-100"></button>
+                <span class="text-[8px] font-bold tracking-widest text-sky-800/75 mt-1.5">GAME</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <button id="btn-start" data-key="START" class="pill-btn w-9 h-3.5 rounded-full transform -rotate-[20deg]"></button>
+                <span class="text-[8px] font-bold tracking-widest text-sky-900/55 mt-1.5">START</span>
             </div>
         </div>
 
-        <!-- 底部功能键与扬声器 -->
-        <div class="relative flex justify-center items-end pb-1 pt-2">
-            <!-- SELECT / START -->
-            <div class="flex space-x-6">
-                <div class="flex flex-col items-center">
-                    <button id="btn-select" data-key="SELECT" class="pill-btn w-10 h-3.5 rounded-full transform -rotate-[24deg]"></button>
-                    <span class="text-[9px] font-bold tracking-widest text-sky-900/50 mt-2">SOUND</span>
-                </div>
-                <div class="flex flex-col items-center">
-                    <button id="btn-start" data-key="START" class="pill-btn w-10 h-3.5 rounded-full transform -rotate-[24deg]"></button>
-                    <span class="text-[9px] font-bold tracking-widest text-sky-900/50 mt-2">START</span>
-                </div>
-            </div>
-
-            <!-- 右下角扬声器开孔 -->
-            <div class="absolute right-1 bottom-1 flex space-x-1.5 -rotate-[24deg]">
-                <div class="w-1.5 h-7 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
-                <div class="w-1.5 h-8 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
-                <div class="w-1.5 h-8 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
-                <div class="w-1.5 h-6 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
-            </div>
+        <!-- 右下角扬声器开孔 -->
+        <div class="absolute right-1 bottom-1 flex space-x-1.5 -rotate-[24deg]">
+            <div class="w-1.5 h-6 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
+            <div class="w-1.5 h-7 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
+            <div class="w-1.5 h-7 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
+            <div class="w-1.5 h-5 bg-sky-900/20 rounded-full shadow-inner border-b border-white/60"></div>
         </div>
-
-        <!-- 底部机身螺丝 -->
-        <div class="absolute bottom-4 left-6 w-3 h-3 rounded-full border border-sky-200/60 bg-white/30 shadow-inner flex items-center justify-center"><div class="w-2 h-[1px] bg-sky-300/60 rotate-90"></div></div>
     </div>
 
-    <!-- 电脑端操作提示 -->
-    <div class="hidden md:flex fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/40 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/60 text-sky-900/70 text-xs space-x-4 shadow-sm z-20">
-        <span><b>方向键 / WASD</b>: 移动</span>
-        <span><b>J / Z / 空格</b>: A键 (跳跃/确认)</span>
-        <span><b>K / X / Shift</b>: B键 (冲刺)</span>
-        <span><b>Enter</b>: 暂停</span>
-    </div>
+    <!-- 底部机身螺丝 -->
+    <div class="absolute bottom-3.5 left-5 w-3 h-3 rounded-full border border-sky-200/60 bg-white/30 shadow-inner flex items-center justify-center"><div class="w-2 h-[1px] bg-sky-300/60 rotate-90"></div></div>
+</div>
+
+<!-- 电脑端操作提示 -->
+<div class="hidden md:flex fixed bottom-3 left-1/2 -translate-x-1/2 bg-white/45 backdrop-blur-md px-4 py-1 rounded-full border border-white/60 text-sky-900/75 text-xs space-x-4 shadow-sm z-20">
+    <span><b>方向键 / WASD</b>: 移动</span>
+    <span><b>J / Z / 空格</b>: A键 (确认/跳跃/发射)</span>
+    <span><b>K / X / Shift</b>: B键 (冲刺/磁铁)</span>
+    <span><b>G / Tab</b>: 切换游戏</span>
+    <span><b>Enter</b>: 暂停</span>
+</div>
 
 <script>
 
 /**
-         * 1. 音效合成器 (Web Audio API 8-bit 冰晶音效)
-         */
-        class SoundFX {
-            constructor() {
-                this.ctx = null;
-                this.muted = false;
-            }
-            init() {
-                if (!this.ctx) {
-                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-                }
-                if (this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-            }
-            toggleMute() {
-                this.muted = !this.muted;
-                const led = document.getElementById('power-led');
-                if(this.muted) {
-                    led.className = "w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]";
-                } else {
-                    led.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]";
-                    this.playCoin();
-                }
-            }
-            playJump() {
-                if (this.muted || !this.ctx) return;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(300, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.12);
-                gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.12);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.12);
-            }
-            playDash() {
-                if (this.muted || !this.ctx) return;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(600, this.ctx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-                gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(this.ctx.currentTime + 0.15);
-            }
-            playCoin() {
-                if (this.muted || !this.ctx) return;
-                const now = this.ctx.currentTime;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(987.77, now); // B5
-                osc.frequency.setValueAtTime(1318.51, now + 0.07); // E6
-                gain.gain.setValueAtTime(0.15, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(now + 0.35);
-            }
-            playDead() {
-                if (this.muted || !this.ctx) return;
-                const now = this.ctx.currentTime;
-                const osc = this.ctx.createOscillator();
-                const gain = this.ctx.createGain();
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.linearRampToValueAtTime(100, now + 0.4);
-                gain.gain.setValueAtTime(0.15, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
-                osc.connect(gain);
-                gain.connect(this.ctx.destination);
-                osc.start();
-                osc.stop(now + 0.4);
+ * 1. 音效合成器 (Web Audio API 8-bit 冰晶音效)
+ */
+class SoundFX {
+    constructor() {
+        this.ctx = null;
+        this.muted = false;
+    }
+    init() {
+        if (!this.ctx) {
+            this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.ctx.state === 'suspended') {
+            this.ctx.resume();
+        }
+    }
+    toggleMute() {
+        this.muted = !this.muted;
+        const led = document.getElementById('power-led');
+        if(this.muted) {
+            led.className = "w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#fbbf24]";
+        } else {
+            led.className = "w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]";
+            this.playCoin();
+        }
+    }
+    playJump() {
+        if (this.muted || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.12);
+    }
+    playDash() {
+        if (this.muted || !this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.15);
+    }
+    playBounce() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(587.33, now + 0.06);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.06);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(now + 0.06);
+    }
+    playCoin() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(987.77, now); // B5
+        osc.frequency.setValueAtTime(1318.51, now + 0.07); // E6
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(now + 0.35);
+    }
+    playSwitch() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, now); // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.06); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.12); // G5
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(now + 0.28);
+    }
+    playDead() {
+        if (this.muted || !this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.linearRampToValueAtTime(100, now + 0.4);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(now + 0.4);
+    }
+}
+
+const sfx = new SoundFX();
+
+/**
+ * 2. 双游戏合集引擎：
+ *    游戏 0: 《FROSTY CLIMB 冰晶攀登》 (经典平台跳跃冲刺)
+ *    游戏 1: 《GLACIER BREAKER 冰川弹球》 (全新爽快打砖块+星尘收集+多球掉落)
+ */
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// 内部渲染分辨率 (放大高度适配全新大屏幕，画面更清晰宽敞)
+const GW = 240;
+const GH = 228;
+canvas.width = GW;
+canvas.height = GH;
+
+// 输入状态管理 (支持摇杆模拟量 analogX 提升跟手感)
+const keys = { UP: false, DOWN: false, LEFT: false, RIGHT: false, A: false, B: false };
+const justPressed = { A: false, B: false, START: false, SELECT: false, GAME: false, LEFT: false, RIGHT: false };
+let analogX = 0; // -1.0 到 1.0 连续跟手输入
+
+// 全局状态
+let currentGame = 0; // 0: FROSTY CLIMB, 1: GLACIER BREAKER
+const GAME_NAMES = ['冰晶攀登', '冰川弹球'];
+let gameState = 'TITLE'; // TITLE, PLAY, PAUSE, OVER
+let score = 0;
+let highScores = [
+    Number(localStorage.getItem('ice_pocket_hi_0') || 0),
+    Number(localStorage.getItem('ice_pocket_hi_1') || 0)
+];
+let frameCount = 0;
+let switchBannerTimer = 0;
+
+// 通用背景雪花与粒子
+let particles = [];
+let bgSnow = [];
+for(let i = 0; i < 28; i++) {
+    bgSnow.push({
+        x: Math.random() * GW,
+        y: Math.random() * GH,
+        r: Math.random() * 1.5 + 0.5,
+        s: Math.random() * 0.5 + 0.2
+    });
+}
+
+function createParticles(x, y, count, color, yOffset = 0) {
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 3.2,
+            vy: (Math.random() - 0.5) * 3.2 - 0.8,
+            r: Math.random() * 2 + 1,
+            life: 15 + Math.random() * 10,
+            maxLife: 25,
+            color: color,
+            useCam: yOffset
+        });
+    }
+}
+
+/* ================= 游戏 0: FROSTY CLIMB (冰晶攀登) ================= */
+let cameraY = 0;
+let player;
+let platforms = [];
+let stars = [];
+
+class ClimbPlayer {
+    constructor() {
+        this.w = 14;
+        this.h = 14;
+        this.x = GW / 2 - this.w / 2;
+        this.y = GH - 40;
+        this.vx = 0;
+        this.vy = 0;
+        this.grounded = false;
+        this.dashCool = 0;
+        this.dashTime = 0;
+        this.facing = 1;
+        this.scaleX = 1;
+        this.scaleY = 1;
+    }
+
+    update() {
+        const accel = this.grounded ? 0.55 : 0.35;
+        const maxSpeed = 2.75;
+        
+        if (this.dashTime <= 0) {
+            if (Math.abs(analogX) > 0.1) {
+                // 摇杆丝滑跟手速率响应
+                const targetVx = analogX * maxSpeed;
+                this.vx += (targetVx - this.vx) * 0.35;
+                this.facing = analogX > 0 ? 1 : -1;
+            } else if (keys.LEFT) {
+                this.vx = Math.max(this.vx - accel, -maxSpeed);
+                this.facing = -1;
+            } else if (keys.RIGHT) {
+                this.vx = Math.min(this.vx + accel, maxSpeed);
+                this.facing = 1;
+            } else {
+                this.vx *= (this.grounded ? 0.78 : 0.9);
+                if (Math.abs(this.vx) < 0.05) this.vx = 0;
             }
         }
 
-        const sfx = new SoundFX();
+        // 跳跃 (A键 或 UP键)
+        if ((justPressed.A || keys.UP) && this.grounded) {
+            this.vy = -5.5;
+            this.grounded = false;
+            this.scaleX = 0.7;
+            this.scaleY = 1.35;
+            sfx.playJump();
+            createParticles(this.x + this.w/2, this.y + this.h, 5, '#e0f2fe', true);
+        }
 
-        /**
-         * 2. 游戏引擎与逻辑：《冰晶企鹅大冒险》(Frosty Climb)
-         * 玩法：控制可爱的圆润小冰灵不断向上跳跃，B键冲刺，收集星星，脚下的深渊会不断上升！
-         */
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+        // 冲刺 (B键)
+        if (this.dashCool > 0) this.dashCool--;
+        if (justPressed.B && this.dashCool === 0 && this.dashTime <= 0) {
+            this.dashTime = 8;
+            this.dashCool = 42;
+            this.vx = this.facing * 5.6;
+            this.vy = -1.2;
+            this.scaleX = 1.4;
+            this.scaleY = 0.6;
+            sfx.playDash();
+            createParticles(this.x + this.w/2, this.y + this.h/2, 8, '#38bdf8', true);
+        }
 
-        // 固定内部渲染分辨率，保持像素/复古精致感
-        const GW = 240;
-        const GH = 200;
-        canvas.width = GW;
-        canvas.height = GH;
-
-        // 输入状态管理
-        const keys = { UP: false, DOWN: false, LEFT: false, RIGHT: false, A: false, B: false };
-        const justPressed = { A: false, B: false, START: false, SELECT: false };
-
-        // 游戏全局变量
-        let gameState = 'TITLE'; // TITLE, PLAY, PAUSE, OVER
-        let score = 0;
-        let highScore = localStorage.getItem('ice_pocket_hi') || 0;
-        let cameraY = 0;
-        let frameCount = 0;
-
-        // 实体对象
-        let player;
-        let platforms = [];
-        let stars = [];
-        let particles = [];
-        let bgSnow = [];
-
-        // 初始化背景雪花
-        for(let i=0; i<25; i++) {
-            bgSnow.push({
-                x: Math.random() * GW,
-                y: Math.random() * GH,
-                r: Math.random() * 1.5 + 0.5,
-                s: Math.random() * 0.5 + 0.2
+        if (this.dashTime > 0) {
+            this.dashTime--;
+            particles.push({
+                x: this.x + this.w/2, y: this.y + this.h/2,
+                vx: 0, vy: 0, r: 5, life: 8, maxLife: 8, color: 'rgba(56, 189, 248, 0.5)', useCam: true
             });
+        } else {
+            this.vy += 0.24;
+            if (this.vy > 6) this.vy = 6;
         }
 
-        class Player {
-            constructor() {
-                this.w = 14;
-                this.h = 14;
-                this.x = GW / 2 - this.w / 2;
-                this.y = GH - 40;
-                this.vx = 0;
-                this.vy = 0;
-                this.grounded = false;
-                this.dashCool = 0;
-                this.dashTime = 0;
-                this.facing = 1; // 1 right, -1 left
-                // 动画形变参数 (挤压与拉伸)
-                this.scaleX = 1;
-                this.scaleY = 1;
-            }
+        this.x += this.vx;
+        this.y += this.vy;
 
-            update() {
-                // 左右移动
-                const accel = this.grounded ? 0.5 : 0.3;
-                const maxSpeed = 2.6;
-                
-                if (this.dashTime <= 0) {
-                    if (keys.LEFT) {
-                        this.vx = Math.max(this.vx - accel, -maxSpeed);
-                        this.facing = -1;
-                    } else if (keys.RIGHT) {
-                        this.vx = Math.min(this.vx + accel, maxSpeed);
-                        this.facing = 1;
-                    } else {
-                        this.vx *= (this.grounded ? 0.8 : 0.92);
-                        if (Math.abs(this.vx) < 0.05) this.vx = 0;
-                    }
-                }
+        if (this.x > GW) this.x = -this.w;
+        if (this.x + this.w < 0) this.x = GW;
 
-                // 跳跃 (A键 或 UP键)
-                if ((justPressed.A || keys.UP) && this.grounded) {
-                    this.vy = -5.4;
-                    this.grounded = false;
-                    this.scaleX = 0.7;
-                    this.scaleY = 1.35;
-                    sfx.playJump();
-                    createParticles(this.x + this.w/2, this.y + this.h, 5, '#e0f2fe');
-                }
+        this.scaleX += (1 - this.scaleX) * 0.2;
+        this.scaleY += (1 - this.scaleY) * 0.2;
 
-                // 冲刺 (B键) - 炫酷位移
-                if (this.dashCool > 0) this.dashCool--;
-                if (justPressed.B && this.dashCool === 0 && this.dashTime <= 0) {
-                    this.dashTime = 8;
-                    this.dashCool = 45;
-                    this.vx = this.facing * 5.5;
-                    this.vy = -1.2; // 略微浮空
-                    this.scaleX = 1.4;
-                    this.scaleY = 0.6;
-                    sfx.playDash();
-                    createParticles(this.x + this.w/2, this.y + this.h/2, 8, '#38bdf8');
-                }
-
-                if (this.dashTime > 0) {
-                    this.dashTime--;
-                    // 冲刺残影粒子
-                    particles.push({
-                        x: this.x + this.w/2, y: this.y + this.h/2,
-                        vx: 0, vy: 0, r: 5, life: 8, maxLife: 8, color: 'rgba(56, 189, 248, 0.5)'
-                    });
-                } else {
-                    // 重力
-                    this.vy += 0.24;
-                    if (this.vy > 6) this.vy = 6;
-                }
-
-                // 应用速度
-                this.x += this.vx;
-                this.y += this.vy;
-
-                // 屏幕左右穿墙 (吃豆人式循环)
-                if (this.x > GW) this.x = -this.w;
-                if (this.x + this.w < 0) this.x = GW;
-
-                // 恢复形变
-                this.scaleX += (1 - this.scaleX) * 0.2;
-                this.scaleY += (1 - this.scaleY) * 0.2;
-
-                // 平台碰撞检测 (仅在下落时检测)
-                this.grounded = false;
-                if (this.vy >= 0) {
-                    for (let p of platforms) {
-                        if (p.broken) continue;
-                        if (this.x + this.w > p.x + 2 && 
-                            this.x < p.x + p.w - 2 &&
-                            this.y + this.h >= p.y && 
-                            this.y + this.h <= p.y + p.h + this.vy + 2) {
-                            
-                            this.y = p.y - this.h;
-                            this.vy = 0;
-                            this.grounded = true;
-                            
-                            // 落地挤压动画
-                            if(this.scaleY > 1.05) {
-                                this.scaleX = 1.25;
-                                this.scaleY = 0.75;
-                            }
-
-                            // 跟随移动平台
-                            if (p.type === 'MOVE') {
-                                this.x += p.vx;
-                            }
-                            // 碎冰平台触发
-                            if (p.type === 'BREAK') {
-                                p.timer++;
-                                if (p.timer > 25) {
-                                    p.broken = true;
-                                    createParticles(p.x + p.w/2, p.y, 10, '#bae6fd');
-                                }
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-
-            draw() {
-                ctx.save();
-                const cx = this.x + this.w / 2;
-                const cy = this.y - cameraY + this.h; // 以底部为中心缩放
-                ctx.translate(cx, cy);
-                ctx.scale(this.scaleX, this.scaleY);
-
-                // 绘制可爱冰精灵身体 (圆角矩形)
-                ctx.fillStyle = this.dashCool > 0 && this.dashTime <= 0 ? '#bae6fd' : '#ffffff';
-                ctx.beginPath();
-                ctx.roundRect(-this.w/2, -this.h, this.w, this.h, [6, 6, 3, 3]);
-                ctx.fill();
-
-                // 冰精灵内部腮红与眼睛
-                const eyeOffset = this.facing * 2.5;
-                ctx.fillStyle = '#0f172a';
-                ctx.fillRect(-3 + eyeOffset, -this.h + 5, 2, 3);
-                ctx.fillRect(2 + eyeOffset, -this.h + 5, 2, 3);
-
-                // 粉色腮红
-                ctx.fillStyle = '#fb7185';
-                ctx.fillRect(-5 + eyeOffset, -this.h + 8, 2, 1.5);
-                ctx.fillRect(4 + eyeOffset, -this.h + 8, 2, 1.5);
-
-                // 头顶小冰晶呆毛
-                ctx.fillStyle = '#38bdf8';
-                ctx.beginPath();
-                ctx.arc(0, -this.h - 2, 2, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.restore();
-            }
-        }
-
-        function createParticles(x, y, count, color) {
-            for (let i = 0; i < count; i++) {
-                particles.push({
-                    x: x,
-                    y: y,
-                    vx: (Math.random() - 0.5) * 3,
-                    vy: (Math.random() - 0.5) * 3 - 1,
-                    r: Math.random() * 2 + 1,
-                    life: 15 + Math.random() * 10,
-                    maxLife: 25,
-                    color: color
-                });
-            }
-        }
-
-        function spawnPlatform(y, isFirst = false) {
-            const w = isFirst ? GW - 40 : Math.max(36, 65 - Math.floor(score / 150));
-            const x = isFirst ? 20 : Math.random() * (GW - w - 10) + 5;
-            
-            let type = 'NORMAL';
-            if (!isFirst && score > 50) {
-                const rand = Math.random();
-                if (rand < 0.25) type = 'MOVE';
-                else if (rand < 0.45) type = 'BREAK';
-            }
-
-            platforms.push({
-                x, y, w, h: 7,
-                type: type,
-                vx: type === 'MOVE' ? (Math.random() > 0.5 ? 1 : -1) * (0.8 + Math.random()*0.5) : 0,
-                timer: 0,
-                broken: false
-            });
-
-            // 伴随生成收集物 (冰晶星星)
-            if (!isFirst && Math.random() < 0.45) {
-                stars.push({
-                    x: x + w / 2,
-                    y: y - 16,
-                    r: 4,
-                    collected: false,
-                    bobOffset: Math.random() * Math.PI * 2
-                });
-            }
-        }
-
-        function initGame() {
-            player = new Player();
-            platforms = [];
-            stars = [];
-            particles = [];
-            cameraY = 0;
-            score = 0;
-
-            // 生成初始平台
-            spawnPlatform(GH - 15, true);
-            for (let i = 1; i < 7; i++) {
-                spawnPlatform(GH - 15 - i * 32);
-            }
-        }
-
-        function updateGame() {
-            frameCount++;
-            player.update();
-
-            // 相机向上平滑跟随玩家
-            const targetCamY = player.y - GH * 0.55;
-            if (targetCamY < cameraY) {
-                cameraY += (targetCamY - cameraY) * 0.1;
-            }
-            
-            // 随着时间推移相机也会自动缓慢上升（深渊逼近感）
-            if (score > 30) {
-                cameraY -= (0.25 + Math.min(0.6, score / 2000));
-            }
-
-            // 更新高度得分
-            const currentHeightScore = Math.floor(Math.abs(Math.min(0, player.y - (GH - 40))) / 5);
-            if (currentHeightScore > score) {
-                score = currentHeightScore;
-            }
-
-            // 更新平台与生成新平台
-            for (let p of platforms) {
-                if (p.type === 'MOVE') {
-                    p.x += p.vx;
-                    if (p.x < 5 || p.x + p.w > GW - 5) p.vx *= -1;
-                }
-            }
-
-            // 移除屏幕下方的平台并生成上方新平台
-            platforms = platforms.filter(p => p.y - cameraY < GH + 20);
-            while (platforms.length < 7) {
-                const highestY = Math.min(...platforms.map(p => p.y));
-                spawnPlatform(highestY - (28 + Math.random() * 8));
-            }
-
-            // 星星收集检测
-            for (let s of stars) {
-                if (!s.collected) {
-                    const dx = (player.x + player.w/2) - s.x;
-                    const dy = (player.y + player.h/2) - s.y;
-                    if (Math.hypot(dx, dy) < player.w/2 + s.r + 3) {
-                        s.collected = true;
-                        score += 25;
-                        sfx.playCoin();
-                        createParticles(s.x, s.y, 12, '#fde047');
-                    }
-                }
-            }
-            stars = stars.filter(s => !s.collected && s.y - cameraY < GH + 20);
-
-            // 更新粒子
-            for (let pt of particles) {
-                pt.x += pt.vx;
-                pt.y += pt.vy;
-                pt.life--;
-            }
-            particles = particles.filter(pt => pt.life > 0);
-
-            // 死亡判定 (掉落屏幕底部)
-            if (player.y - cameraY > GH + 15) {
-                sfx.playDead();
-                if (score > highScore) {
-                    highScore = score;
-                    localStorage.setItem('ice_pocket_hi', highScore);
-                }
-                gameState = 'OVER';
-            }
-        }
-
-        function drawBackground() {
-            // 深邃冰海渐变背景
-            const grad = ctx.createLinearGradient(0, 0, 0, GH);
-            grad.addColorStop(0, '#09101d');
-            grad.addColorStop(1, '#1e293b');
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, GW, GH);
-
-            // 飘落雪花
-            ctx.fillStyle = 'rgba(224, 242, 254, 0.35)';
-            for (let s of bgSnow) {
-                if (gameState === 'PLAY') {
-                    s.y += s.s;
-                    if (s.y > GH) s.y = 0;
-                }
-                ctx.beginPath();
-                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function drawGame() {
-            drawBackground();
-
-            // 绘制平台
+        this.grounded = false;
+        if (this.vy >= 0) {
             for (let p of platforms) {
                 if (p.broken) continue;
-                const py = p.y - cameraY;
+                if (this.x + this.w > p.x + 2 && 
+                    this.x < p.x + p.w - 2 &&
+                    this.y + this.h >= p.y && 
+                    this.y + this.h <= p.y + p.h + this.vy + 2) {
+                    
+                    this.y = p.y - this.h;
+                    this.vy = 0;
+                    this.grounded = true;
+                    
+                    if(this.scaleY > 1.05) {
+                        this.scaleX = 1.25;
+                        this.scaleY = 0.75;
+                    }
+                    if (p.type === 'MOVE') this.x += p.vx;
+                    if (p.type === 'BREAK') {
+                        p.timer++;
+                        if (p.timer > 25) {
+                            p.broken = true;
+                            createParticles(p.x + p.w/2, p.y, 10, '#bae6fd', true);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    draw() {
+        ctx.save();
+        const cx = this.x + this.w / 2;
+        const cy = this.y - cameraY + this.h;
+        ctx.translate(cx, cy);
+        ctx.scale(this.scaleX, this.scaleY);
+
+        ctx.fillStyle = this.dashCool > 0 && this.dashTime <= 0 ? '#bae6fd' : '#ffffff';
+        ctx.beginPath();
+        ctx.roundRect(-this.w/2, -this.h, this.w, this.h, [6, 6, 3, 3]);
+        ctx.fill();
+
+        const eyeOffset = this.facing * 2.5;
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(-3 + eyeOffset, -this.h + 5, 2, 3);
+        ctx.fillRect(2 + eyeOffset, -this.h + 5, 2, 3);
+
+        ctx.fillStyle = '#fb7185';
+        ctx.fillRect(-5 + eyeOffset, -this.h + 8, 2, 1.5);
+        ctx.fillRect(4 + eyeOffset, -this.h + 8, 2, 1.5);
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(0, -this.h - 2, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    }
+}
+
+function spawnPlatform(y, isFirst = false) {
+    const w = isFirst ? GW - 40 : Math.max(36, 65 - Math.floor(score / 150));
+    const x = isFirst ? 20 : Math.random() * (GW - w - 10) + 5;
+    
+    let type = 'NORMAL';
+    if (!isFirst && score > 50) {
+        const rand = Math.random();
+        if (rand < 0.25) type = 'MOVE';
+        else if (rand < 0.45) type = 'BREAK';
+    }
+
+    platforms.push({
+        x, y, w, h: 7,
+        type: type,
+        vx: type === 'MOVE' ? (Math.random() > 0.5 ? 1 : -1) * (0.8 + Math.random()*0.5) : 0,
+        timer: 0,
+        broken: false
+    });
+
+    if (!isFirst && Math.random() < 0.45) {
+        stars.push({
+            x: x + w / 2,
+            y: y - 16,
+            r: 4,
+            collected: false,
+            bobOffset: Math.random() * Math.PI * 2
+        });
+    }
+}
+
+function initClimbGame() {
+    player = new ClimbPlayer();
+    platforms = [];
+    stars = [];
+    particles = [];
+    cameraY = 0;
+    score = 0;
+
+    spawnPlatform(GH - 15, true);
+    for (let i = 1; i < 8; i++) {
+        spawnPlatform(GH - 15 - i * 32);
+    }
+}
+
+function updateClimbGame() {
+    frameCount++;
+    player.update();
+
+    const targetCamY = player.y - GH * 0.55;
+    if (targetCamY < cameraY) {
+        cameraY += (targetCamY - cameraY) * 0.1;
+    }
+    if (score > 30) {
+        cameraY -= (0.25 + Math.min(0.6, score / 2000));
+    }
+
+    const currentHeightScore = Math.floor(Math.abs(Math.min(0, player.y - (GH - 40))) / 5);
+    if (currentHeightScore > score) score = currentHeightScore;
+
+    for (let p of platforms) {
+        if (p.type === 'MOVE') {
+            p.x += p.vx;
+            if (p.x < 5 || p.x + p.w > GW - 5) p.vx *= -1;
+        }
+    }
+
+    platforms = platforms.filter(p => p.y - cameraY < GH + 20);
+    while (platforms.length < 8) {
+        const highestY = Math.min(...platforms.map(p => p.y));
+        spawnPlatform(highestY - (28 + Math.random() * 8));
+    }
+
+    for (let s of stars) {
+        if (!s.collected) {
+            const dx = (player.x + player.w/2) - s.x;
+            const dy = (player.y + player.h/2) - s.y;
+            if (Math.hypot(dx, dy) < player.w/2 + s.r + 3) {
+                s.collected = true;
+                score += 25;
+                sfx.playCoin();
+                createParticles(s.x, s.y, 12, '#fde047', true);
+            }
+        }
+    }
+    stars = stars.filter(s => !s.collected && s.y - cameraY < GH + 20);
+
+    updateParticles();
+
+    if (player.y - cameraY > GH + 15) {
+        sfx.playDead();
+        saveHighScore();
+        gameState = 'OVER';
+    }
+}
+
+function drawClimbGame() {
+    drawBackground();
+
+    for (let p of platforms) {
+        if (p.broken) continue;
+        const py = p.y - cameraY;
+        
+        if (p.type === 'NORMAL') {
+            ctx.fillStyle = '#38bdf8';
+            ctx.beginPath();
+            ctx.roundRect(p.x, py, p.w, p.h, 3);
+            ctx.fill();
+            ctx.fillStyle = '#e0f2fe';
+            ctx.beginPath();
+            ctx.roundRect(p.x, py, p.w, 3, [3, 3, 0, 0]);
+            ctx.fill();
+        } else if (p.type === 'MOVE') {
+            ctx.fillStyle = '#f472b6';
+            ctx.beginPath();
+            ctx.roundRect(p.x, py, p.w, p.h, 3);
+            ctx.fill();
+            ctx.fillStyle = '#fce7f3';
+            ctx.fillRect(p.x + 4, py + 1, p.w - 8, 2);
+        } else if (p.type === 'BREAK') {
+            const shake = p.timer > 0 ? (Math.random() - 0.5) * 2 : 0;
+            ctx.fillStyle = p.timer > 12 ? 'rgba(186, 230, 253, 0.4)' : 'rgba(186, 230, 253, 0.75)';
+            ctx.beginPath();
+            ctx.roundRect(p.x + shake, py, p.w, p.h, 2);
+            ctx.fill();
+        }
+    }
+
+    for (let s of stars) {
+        const sy = s.y - cameraY + Math.sin(frameCount * 0.1 + s.bobOffset) * 2.5;
+        ctx.save();
+        ctx.translate(s.x, sy);
+        ctx.rotate(frameCount * 0.04);
+        ctx.fillStyle = '#fde047';
+        ctx.fillRect(-3.5, -3.5, 7, 7);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(-1.5, -1.5, 3, 3);
+        ctx.restore();
+    }
+
+    drawParticles();
+    player.draw();
+    drawHUD();
+}
+
+/* ================= 游戏 1: GLACIER BREAKER (冰川弹球) ================= */
+let paddle;
+let balls = [];
+let bricks = [];
+let drops = [];
+let breakerLevel = 1;
+
+function buildBrickGrid(level) {
+    bricks = [];
+    const cols = 7;
+    const rows = Math.min(6, 3 + level);
+    const pad = 4;
+    const bw = Math.floor((GW - 20 - (cols - 1) * pad) / cols);
+    const bh = 10;
+    const colors = ['#38bdf8', '#f472b6', '#a78bfa', '#34d399', '#fde047', '#fb7185'];
+
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            const hp = (r === 0 && level > 1) ? 2 : 1;
+            bricks.push({
+                x: 10 + c * (bw + pad),
+                y: 28 + r * (bh + pad),
+                w: bw,
+                h: bh,
+                hp: hp,
+                color: colors[(r + level - 1) % colors.length]
+            });
+        }
+    }
+}
+
+function initBreakerGame() {
+    score = 0;
+    breakerLevel = 1;
+    particles = [];
+    drops = [];
+    paddle = {
+        w: 44,
+        h: 7,
+        x: GW / 2 - 22,
+        y: GH - 18,
+        speed: 3.8,
+        magnet: false
+    };
+    balls = [{
+        x: GW / 2,
+        y: paddle.y - 5,
+        vx: 1.8 * (Math.random() > 0.5 ? 1 : -1),
+        vy: -2.4,
+        r: 4,
+        stuck: true
+    }];
+    buildBrickGrid(breakerLevel);
+}
+
+function updateBreakerGame() {
+    frameCount++;
+
+    // 挡板丝滑跟手移动
+    if (Math.abs(analogX) > 0.05) {
+        paddle.x += analogX * paddle.speed * 1.15;
+    } else if (keys.LEFT) {
+        paddle.x -= paddle.speed;
+    } else if (keys.RIGHT) {
+        paddle.x += paddle.speed;
+    }
+    paddle.x = Math.max(6, Math.min(GW - paddle.w - 6, paddle.x));
+
+    // B键按住激活冰磁引力 (吸引掉落的道具与微调回球)
+    paddle.magnet = keys.B;
+
+    // A键或UP键发射粘在挡板上的冰球
+    if (justPressed.A || keys.UP) {
+        for (let b of balls) {
+            if (b.stuck) {
+                b.stuck = false;
+                b.vy = -2.6 - Math.min(1.0, breakerLevel * 0.15);
+                b.vx = (Math.random() - 0.5) * 2.4 || 1.5;
+                sfx.playJump();
+            }
+        }
+    }
+
+    // 更新冰球
+    for (let b of balls) {
+        if (b.stuck) {
+            b.x = paddle.x + paddle.w / 2;
+            b.y = paddle.y - b.r - 1;
+            continue;
+        }
+
+        b.x += b.vx;
+        b.y += b.vy;
+
+        // 墙壁碰撞
+        if (b.x - b.r < 4) {
+            b.x = 4 + b.r;
+            b.vx *= -1;
+            sfx.playBounce();
+        } else if (b.x + b.r > GW - 4) {
+            b.x = GW - 4 - b.r;
+            b.vx *= -1;
+            sfx.playBounce();
+        }
+        if (b.y - b.r < 20) {
+            b.y = 20 + b.r;
+            b.vy *= -1;
+            sfx.playBounce();
+        }
+
+        // 挡板碰撞
+        if (b.vy > 0 &&
+            b.x + b.r >= paddle.x &&
+            b.x - b.r <= paddle.x + paddle.w &&
+            b.y + b.r >= paddle.y &&
+            b.y - b.r <= paddle.y + paddle.h) {
+            
+            const hitPos = (b.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
+            const speed = Math.min(4.2, Math.hypot(b.vx, b.vy) * 1.02);
+            b.vx = hitPos * speed * 0.85;
+            b.vy = -Math.sqrt(Math.max(1.5, speed * speed - b.vx * b.vx));
+            b.y = paddle.y - b.r - 1;
+            sfx.playJump();
+            createParticles(b.x, paddle.y, 6, '#38bdf8', false);
+        }
+
+        // 冰砖碰撞
+        for (let br of bricks) {
+            if (br.hp <= 0) continue;
+            if (b.x + b.r > br.x && b.x - b.r < br.x + br.w &&
+                b.y + b.r > br.y && b.y - b.r < br.y + br.h) {
                 
-                if (p.type === 'NORMAL') {
-                    ctx.fillStyle = '#38bdf8';
-                    ctx.beginPath();
-                    ctx.roundRect(p.x, py, p.w, p.h, 3);
-                    ctx.fill();
-                    // 顶部积雪高光
-                    ctx.fillStyle = '#e0f2fe';
-                    ctx.beginPath();
-                    ctx.roundRect(p.x, py, p.w, 3, [3, 3, 0, 0]);
-                    ctx.fill();
-                } else if (p.type === 'MOVE') {
-                    ctx.fillStyle = '#f472b6'; // 粉色移动冰砖
-                    ctx.beginPath();
-                    ctx.roundRect(p.x, py, p.w, p.h, 3);
-                    ctx.fill();
-                    ctx.fillStyle = '#fce7f3';
-                    ctx.fillRect(p.x + 4, py + 1, p.w - 8, 2);
-                } else if (p.type === 'BREAK') {
-                    // 闪烁的碎冰
-                    const shake = p.timer > 0 ? (Math.random() - 0.5) * 2 : 0;
-                    ctx.fillStyle = p.timer > 12 ? 'rgba(186, 230, 253, 0.4)' : 'rgba(186, 230, 253, 0.75)';
-                    ctx.beginPath();
-                    ctx.roundRect(p.x + shake, py, p.w, p.h, 2);
-                    ctx.fill();
+                br.hp--;
+                b.vy *= -1;
+                score += 15;
+                sfx.playBounce();
+                createParticles(br.x + br.w / 2, br.y + br.h / 2, 8, br.color, false);
+
+                // 几率掉落双倍冰球或加分星尘
+                if (br.hp <= 0 && Math.random() < 0.28) {
+                    drops.push({
+                        x: br.x + br.w / 2,
+                        y: br.y + br.h / 2,
+                        type: Math.random() < 0.45 ? 'MULTI' : 'STAR',
+                        vy: 1.3
+                    });
                 }
-            }
-
-            // 绘制收集星星 (冰晶菱形)
-            for (let s of stars) {
-                const sy = s.y - cameraY + Math.sin(frameCount * 0.1 + s.bobOffset) * 2.5;
-                ctx.save();
-                ctx.translate(s.x, sy);
-                ctx.rotate(frameCount * 0.04);
-                ctx.fillStyle = '#fde047';
-                ctx.fillRect(-3.5, -3.5, 7, 7);
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(-1.5, -1.5, 3, 3);
-                ctx.restore();
-            }
-
-            // 绘制粒子
-            for (let pt of particles) {
-                ctx.fillStyle = pt.color;
-                ctx.globalAlpha = pt.life / pt.maxLife;
-                ctx.beginPath();
-                ctx.arc(pt.x, pt.y - cameraY, pt.r, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            ctx.globalAlpha = 1;
-
-            // 绘制玩家
-            player.draw();
-
-            // 顶部 HUD 分数栏
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
-            ctx.fillRect(0, 0, GW, 18);
-            ctx.fillStyle = '#38bdf8';
-            ctx.font = '8px "Press Start 2P"';
-            ctx.textAlign = 'left';
-            ctx.fillText(`SCORE:${score}`, 6, 12);
-            ctx.textAlign = 'right';
-            ctx.fillStyle = '#94a3b8';
-            ctx.fillText(`HI:${highScore}`, GW - 6, 12);
-        }
-
-        function drawTitleScreen() {
-            drawBackground();
-            frameCount++;
-
-            // 标题框
-            ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
-            ctx.strokeStyle = '#38bdf8';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.roundRect(25, 30, GW - 50, 68, 8);
-            ctx.fill();
-            ctx.stroke();
-
-            ctx.textAlign = 'center';
-            ctx.fillStyle = '#e0f2fe';
-            ctx.font = '14px "Press Start 2P"';
-            ctx.fillText('FROSTY', GW / 2, 56);
-            ctx.fillStyle = '#38bdf8';
-            ctx.fillText('CLIMB', GW / 2, 78);
-
-            // 展示小冰灵动画
-            const bounceY = Math.abs(Math.sin(frameCount * 0.08)) * 12;
-            ctx.fillStyle = '#ffffff';
-            ctx.beginPath();
-            ctx.roundRect(GW/2 - 8, 125 - bounceY, 16, 16, [7, 7, 3, 3]);
-            ctx.fill();
-            ctx.fillStyle = '#0f172a';
-            ctx.fillRect(GW/2 - 3, 130 - bounceY, 2, 3);
-            ctx.fillRect(GW/2 + 3, 130 - bounceY, 2, 3);
-
-            // 闪烁提示
-            if (Math.floor(frameCount / 25) % 2 === 0) {
-                ctx.fillStyle = '#fde047';
-                ctx.font = '8px "Press Start 2P"';
-                ctx.fillText('PRESS [A] OR START', GW / 2, 168);
-            }
-
-            ctx.fillStyle = '#64748b';
-            ctx.font = '7px "Press Start 2P"';
-            ctx.fillText('[A] JUMP   [B] DASH', GW / 2, 186);
-        }
-
-        function drawGameOver() {
-            drawGame();
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.75)';
-            ctx.fillRect(0, 0, GW, GH);
-
-            ctx.textAlign = 'center';
-            ctx.fillStyle = '#fb7185';
-            ctx.font = '14px "Press Start 2P"';
-            ctx.fillText('GAME OVER', GW / 2, 75);
-
-            ctx.fillStyle = '#e0f2fe';
-            ctx.font = '9px "Press Start 2P"';
-            ctx.fillText(`SCORE: ${score}`, GW / 2, 105);
-            
-            ctx.fillStyle = '#fde047';
-            ctx.fillText(`BEST:  ${highScore}`, GW / 2, 125);
-
-            if (Math.floor(++frameCount / 25) % 2 === 0) {
-                ctx.fillStyle = '#38bdf8';
-                ctx.font = '8px "Press Start 2P"';
-                ctx.fillText('PRESS [A] TO RETRY', GW / 2, 160);
+                break;
             }
         }
+    }
 
-        function drawPause() {
-            drawGame();
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.6)';
-            ctx.fillRect(0, 0, GW, GH);
-            ctx.textAlign = 'center';
-            ctx.fillStyle = '#e0f2fe';
-            ctx.font = '12px "Press Start 2P"';
-            ctx.fillText('PAUSED', GW / 2, GH / 2 + 4);
+    // 过滤掉落底部的球
+    balls = balls.filter(b => b.y - b.r <= GH + 10);
+    if (balls.length === 0) {
+        sfx.playDead();
+        saveHighScore();
+        gameState = 'OVER';
+        return;
+    }
+
+    // 道具掉落更新
+    for (let d of drops) {
+        d.y += d.vy;
+        if (paddle.magnet) {
+            d.x += (paddle.x + paddle.w / 2 - d.x) * 0.08;
+            d.y += 0.5;
         }
-
-        // 主循环
-        function loop() {
-            // 处理状态切换指令
-            if (justPressed.SELECT) {
-                sfx.init();
-                sfx.toggleMute();
-            }
-
-            if (gameState === 'TITLE') {
-                if (justPressed.A || justPressed.START) {
-                    sfx.init();
-                    sfx.playCoin();
-                    initGame();
-                    gameState = 'PLAY';
-                }
-                drawTitleScreen();
-            } else if (gameState === 'PLAY') {
-                if (justPressed.START) {
-                    gameState = 'PAUSE';
-                    sfx.playCoin();
-                } else {
-                    updateGame();
-                    drawGame();
-                }
-            } else if (gameState === 'PAUSE') {
-                if (justPressed.START || justPressed.A) {
-                    gameState = 'PLAY';
-                }
-                drawPause();
-            } else if (gameState === 'OVER') {
-                if (justPressed.A || justPressed.START) {
-                    sfx.playJump();
-                    initGame();
-                    gameState = 'PLAY';
-                }
-                drawGameOver();
-            }
-
-            // 重置单次触发按键
-            for (let k in justPressed) justPressed[k] = false;
-
-            requestAnimationFrame(loop);
-        }
-
-        /**
-         * 3. 硬件按钮与键盘交互绑定 (完美兼容移动端多点触控与桌面端)
-         */
-        function triggerButton(key, isDown) {
-            if (isDown) {
-                sfx.init();
-                if (!keys[key]) {
-                    justPressed[key] = true;
-                    // 移动端轻微震动反馈
-                    if (navigator.vibrate) navigator.vibrate(12);
-                }
-                keys[key] = true;
+        if (d.x >= paddle.x - 4 && d.x <= paddle.x + paddle.w + 4 &&
+            d.y >= paddle.y - 4 && d.y <= paddle.y + paddle.h + 6) {
+            d.collected = true;
+            sfx.playCoin();
+            if (d.type === 'MULTI' && balls.length < 4) {
+                const ref = balls[0];
+                balls.push({
+                    x: ref.x,
+                    y: ref.y,
+                    vx: -ref.vx || 1.8,
+                    vy: -Math.abs(ref.vy),
+                    r: 4,
+                    stuck: false
+                });
+                createParticles(paddle.x + paddle.w/2, paddle.y, 10, '#38bdf8', false);
             } else {
-                keys[key] = false;
-            }
-
-            // 更新UI按钮按下样式
-            const btnEl = document.querySelector(`[data-key="${key}"]`);
-            if (btnEl) {
-                if (isDown) btnEl.classList.add('active');
-                else btnEl.classList.remove('active');
+                score += 50;
+                createParticles(paddle.x + paddle.w/2, paddle.y, 12, '#fde047', false);
             }
         }
+    }
+    drops = drops.filter(d => !d.collected && d.y < GH + 10);
 
-        // 绑定虚拟按键触摸与鼠标事件
-        document.querySelectorAll('[data-key]').forEach(btn => {
-            const key = btn.getAttribute('data-key');
-            
-            const handleDown = (e) => {
-                e.preventDefault();
-                triggerButton(key, true);
-            };
-            const handleUp = (e) => {
-                e.preventDefault();
-                triggerButton(key, false);
-            };
+    // 过关检测
+    if (bricks.every(br => br.hp <= 0)) {
+        breakerLevel++;
+        score += 100;
+        sfx.playCoin();
+        buildBrickGrid(breakerLevel);
+        balls = [{
+            x: paddle.x + paddle.w / 2,
+            y: paddle.y - 5,
+            vx: 2.0,
+            vy: -2.6,
+            r: 4,
+            stuck: true
+        }];
+    }
 
-            btn.addEventListener('pointerdown', handleDown);
-            btn.addEventListener('pointerup', handleUp);
-            btn.addEventListener('pointerleave', handleUp);
-            btn.addEventListener('pointercancel', handleUp);
-        });
+    updateParticles();
+}
 
-        // 绑定电脑端键盘事件
-        const keyMap = {
-            'ArrowUp': 'UP', 'KeyW': 'UP',
-            'ArrowDown': 'DOWN', 'KeyS': 'DOWN',
-            'ArrowLeft': 'LEFT', 'KeyA': 'LEFT',
-            'ArrowRight': 'RIGHT', 'KeyD': 'RIGHT',
-            'KeyJ': 'A', 'KeyZ': 'A', 'Space': 'A',
-            'KeyK': 'B', 'KeyX': 'B', 'ShiftLeft': 'B', 'ShiftRight': 'B',
-            'Enter': 'START',
-            'KeyM': 'SELECT'
-        };
+function drawBreakerGame() {
+    drawBackground();
 
-        window.addEventListener('keydown', (e) => {
-            const mapped = keyMap[e.code];
-            if (mapped) {
-                e.preventDefault();
-                triggerButton(mapped, true);
+    // 绘制冰砖
+    for (let br of bricks) {
+        if (br.hp <= 0) continue;
+        ctx.fillStyle = br.color;
+        ctx.beginPath();
+        ctx.roundRect(br.x, br.y, br.w, br.h, 2.5);
+        ctx.fill();
+
+        // 冰砖高光
+        ctx.fillStyle = 'rgba(255,255,255,0.65)';
+        ctx.fillRect(br.x + 2, br.y + 1.5, br.w - 4, 2);
+
+        if (br.hp > 1) {
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(br.x + 1, br.y + 1, br.w - 2, br.h - 2);
+        }
+    }
+
+    // 绘制掉落道具
+    for (let d of drops) {
+        ctx.save();
+        ctx.translate(d.x, d.y);
+        ctx.fillStyle = d.type === 'MULTI' ? '#38bdf8' : '#fde047';
+        ctx.beginPath();
+        ctx.arc(0, 0, 4.5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '6px "Press Start 2P"';
+        ctx.textAlign = 'center';
+        ctx.fillText(d.type === 'MULTI' ? '+' : '★', 0, 2.5);
+        ctx.restore();
+    }
+
+    // 绘制冰川挡板
+    ctx.fillStyle = paddle.magnet ? '#f472b6' : '#38bdf8';
+    ctx.beginPath();
+    ctx.roundRect(paddle.x, paddle.y, paddle.w, paddle.h, 3.5);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(paddle.x + 4, paddle.y + 1.5, paddle.w - 8, 2);
+
+    // 绘制弹球
+    for (let b of balls) {
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(b.x - 1, b.y - 1, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (b.stuck && Math.floor(frameCount / 20) % 2 === 0) {
+            ctx.fillStyle = '#fde047';
+            ctx.font = '7px "Press Start 2P"';
+            ctx.textAlign = 'center';
+            ctx.fillText('PRESS [A] LAUNCH', GW / 2, GH - 36);
+        }
+    }
+
+    drawParticles();
+    drawHUD();
+}
+
+/* ================= 公共渲染与状态机 ================= */
+function saveHighScore() {
+    if (score > highScores[currentGame]) {
+        highScores[currentGame] = score;
+        localStorage.setItem(`ice_pocket_hi_${currentGame}`, score);
+    }
+}
+
+function updateParticles() {
+    for (let pt of particles) {
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.life--;
+    }
+    particles = particles.filter(pt => pt.life > 0);
+}
+
+function drawParticles() {
+    for (let pt of particles) {
+        ctx.fillStyle = pt.color;
+        ctx.globalAlpha = pt.life / pt.maxLife;
+        ctx.beginPath();
+        const py = pt.useCam ? pt.y - cameraY : pt.y;
+        ctx.arc(pt.x, py, pt.r, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+}
+
+function drawBackground() {
+    const grad = ctx.createLinearGradient(0, 0, 0, GH);
+    grad.addColorStop(0, '#09101d');
+    grad.addColorStop(1, '#1e293b');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, GW, GH);
+
+    ctx.fillStyle = 'rgba(224, 242, 254, 0.35)';
+    for (let s of bgSnow) {
+        if (gameState === 'PLAY') {
+            s.y += s.s;
+            if (s.y > GH) s.y = 0;
+        }
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function drawHUD() {
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.7)';
+    ctx.fillRect(0, 0, GW, 18);
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '8px "Press Start 2P"';
+    ctx.textAlign = 'left';
+    ctx.fillText(`SCORE:${score}`, 6, 12);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#94a3b8';
+    ctx.fillText(`HI:${highScores[currentGame]}`, GW - 6, 12);
+}
+
+function drawTitleScreen() {
+    drawBackground();
+    frameCount++;
+
+    // 顶部卡带指示栏
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+    ctx.fillRect(0, 0, GW, 20);
+    ctx.fillStyle = '#fde047';
+    ctx.font = '7px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.fillText(`◀ GAME ${currentGame + 1}/2: ${currentGame === 0 ? 'CLIMB' : 'BREAKER'} ▶`, GW / 2, 13);
+
+    // 标题框
+    ctx.fillStyle = currentGame === 0 ? 'rgba(56, 189, 248, 0.16)' : 'rgba(244, 114, 182, 0.16)';
+    ctx.strokeStyle = currentGame === 0 ? '#38bdf8' : '#f472b6';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(22, 32, GW - 44, 68, 8);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.textAlign = 'center';
+    if (currentGame === 0) {
+        ctx.fillStyle = '#e0f2fe';
+        ctx.font = '14px "Press Start 2P"';
+        ctx.fillText('FROSTY', GW / 2, 58);
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillText('CLIMB', GW / 2, 80);
+
+        // 小冰灵跳跃预览
+        const bounceY = Math.abs(Math.sin(frameCount * 0.08)) * 12;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.roundRect(GW/2 - 8, 136 - bounceY, 16, 16, [7, 7, 3, 3]);
+        ctx.fill();
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(GW/2 - 3, 141 - bounceY, 2, 3);
+        ctx.fillRect(GW/2 + 3, 141 - bounceY, 2, 3);
+    } else {
+        ctx.fillStyle = '#fce7f3';
+        ctx.font = '13px "Press Start 2P"';
+        ctx.fillText('GLACIER', GW / 2, 58);
+        ctx.fillStyle = '#f472b6';
+        ctx.fillText('BREAKER', GW / 2, 80);
+
+        // 挡板弹球预览动画
+        const px = GW / 2 + Math.sin(frameCount * 0.06) * 28;
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.roundRect(px - 20, 145, 40, 6, 3);
+        ctx.fill();
+        const by = 138 - Math.abs(Math.cos(frameCount * 0.12)) * 18;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(px, by, 4, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    if (Math.floor(frameCount / 25) % 2 === 0) {
+        ctx.fillStyle = '#fde047';
+        ctx.font = '8px "Press Start 2P"';
+        ctx.fillText('PRESS [A] TO START', GW / 2, 180);
+    }
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '7px "Press Start 2P"';
+    ctx.fillText(currentGame === 0 ? '[A] JUMP   [B] DASH' : '[A] LAUNCH [B] MAGNET', GW / 2, 198);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillText('[GAME] SWITCH CARTRIDGE', GW / 2, 214);
+}
+
+function drawGameOver() {
+    if (currentGame === 0) drawClimbGame();
+    else drawBreakerGame();
+
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.78)';
+    ctx.fillRect(0, 0, GW, GH);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#fb7185';
+    ctx.font = '14px "Press Start 2P"';
+    ctx.fillText('GAME OVER', GW / 2, 78);
+
+    ctx.fillStyle = '#e0f2fe';
+    ctx.font = '9px "Press Start 2P"';
+    ctx.fillText(`SCORE: ${score}`, GW / 2, 110);
+    
+    ctx.fillStyle = '#fde047';
+    ctx.fillText(`BEST:  ${highScores[currentGame]}`, GW / 2, 130);
+
+    if (Math.floor(++frameCount / 25) % 2 === 0) {
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '8px "Press Start 2P"';
+        ctx.fillText('PRESS [A] TO RETRY', GW / 2, 168);
+    }
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '7px "Press Start 2P"';
+    ctx.fillText('PRESS [GAME] SWITCH', GW / 2, 192);
+}
+
+function drawPause() {
+    if (currentGame === 0) drawClimbGame();
+    else drawBreakerGame();
+
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.65)';
+    ctx.fillRect(0, 0, GW, GH);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#e0f2fe';
+    ctx.font = '12px "Press Start 2P"';
+    ctx.fillText('PAUSED', GW / 2, GH / 2 - 4);
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '7px "Press Start 2P"';
+    ctx.fillText('PRESS [START] RESUME', GW / 2, GH / 2 + 18);
+}
+
+function switchGame(nextIndex) {
+    sfx.init();
+    sfx.playSwitch();
+    currentGame = typeof nextIndex === 'number' ? nextIndex : (currentGame + 1) % 2;
+    gameState = 'TITLE';
+    switchBannerTimer = 60;
+
+    document.getElementById('bezel-game-label').textContent = `ICE POCKET · 0${currentGame + 1}`;
+    document.getElementById('game-title-badge').textContent = `切换: ${GAME_NAMES[currentGame]}`;
+}
+
+function initActiveGame() {
+    if (currentGame === 0) initClimbGame();
+    else initBreakerGame();
+}
+
+// 主循环
+function loop() {
+    if (justPressed.SELECT) {
+        sfx.init();
+        sfx.toggleMute();
+    }
+    if (justPressed.GAME) {
+        switchGame();
+    }
+
+    if (gameState === 'TITLE') {
+        if (justPressed.LEFT || justPressed.RIGHT) {
+            switchGame();
+        } else if (justPressed.A || justPressed.START) {
+            sfx.init();
+            sfx.playCoin();
+            initActiveGame();
+            gameState = 'PLAY';
+        }
+        drawTitleScreen();
+    } else if (gameState === 'PLAY') {
+        if (justPressed.START) {
+            gameState = 'PAUSE';
+            sfx.playCoin();
+        } else {
+            if (currentGame === 0) {
+                updateClimbGame();
+                if (gameState === 'PLAY') drawClimbGame();
+            } else {
+                updateBreakerGame();
+                if (gameState === 'PLAY') drawBreakerGame();
             }
-        });
+        }
+    } else if (gameState === 'PAUSE') {
+        if (justPressed.START || justPressed.A) {
+            gameState = 'PLAY';
+        }
+        drawPause();
+    } else if (gameState === 'OVER') {
+        if (justPressed.A || justPressed.START) {
+            sfx.playJump();
+            initActiveGame();
+            gameState = 'PLAY';
+        }
+        drawGameOver();
+    }
 
-        window.addEventListener('keyup', (e) => {
-            const mapped = keyMap[e.code];
-            if (mapped) {
-                e.preventDefault();
-                triggerButton(mapped, false);
-            }
-        });
+    // 切换游戏提示横幅
+    if (switchBannerTimer > 0) {
+        switchBannerTimer--;
+        ctx.fillStyle = 'rgba(14, 165, 233, 0.9)';
+        ctx.fillRect(20, GH / 2 - 14, GW - 40, 24);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '8px "Press Start 2P"';
+        ctx.textAlign = 'center';
+        ctx.fillText(`CARTRIDGE 0${currentGame + 1} LOADED`, GW / 2, GH / 2 + 2);
+    }
 
-        // 启动游戏机
-        requestAnimationFrame(loop);
+    for (let k in justPressed) justPressed[k] = false;
+    requestAnimationFrame(loop);
+}
+
+/**
+ * 3. 人体工学跟手操控系统 (支持灵动摇杆 + 滑动十字键 + 顶部快捷栏)
+ */
+function triggerButton(key, isDown) {
+    if (isDown) {
+        sfx.init();
+        if (!keys[key]) {
+            justPressed[key] = true;
+            if (navigator.vibrate) navigator.vibrate(10);
+        }
+        keys[key] = true;
+    } else {
+        keys[key] = false;
+    }
+
+    const btnEl = document.querySelector(`[data-key="${key}"], [data-dpad="${key}"]`);
+    if (btnEl) {
+        if (isDown) btnEl.classList.add('active');
+        else btnEl.classList.remove('active');
+    }
+}
+
+// 绑定 AB / START / SELECT / GAME 按钮
+document.querySelectorAll('[data-key]').forEach(btn => {
+    const key = btn.getAttribute('data-key');
+    const handleDown = (e) => {
+        e.preventDefault();
+        triggerButton(key, true);
+    };
+    const handleUp = (e) => {
+        e.preventDefault();
+        triggerButton(key, false);
+    };
+    btn.addEventListener('pointerdown', handleDown);
+    btn.addEventListener('pointerup', handleUp);
+    btn.addEventListener('pointerleave', handleUp);
+    btn.addEventListener('pointercancel', handleUp);
+});
+
+// 灵动跟手摇杆逻辑 (指尖拖动实时映射速度与方向)
+const joyZone = document.getElementById('joystick-zone');
+const joyKnob = document.getElementById('joystick-knob');
+let joyTouchId = null;
+
+function handleJoystickMove(clientX, clientY) {
+    const rect = joyZone.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const maxDist = rect.width * 0.36;
+
+    let dx = clientX - cx;
+    let dy = clientY - cy;
+    const dist = Math.hypot(dx, dy);
+
+    if (dist > maxDist) {
+        dx = (dx / dist) * maxDist;
+        dy = (dy / dist) * maxDist;
+    }
+
+    joyKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+
+    // 连续水平跟手量 (-1 到 1)
+    analogX = Math.abs(dx) > 5 ? (dx / maxDist) : 0;
+
+    triggerButton('LEFT', dx < -10);
+    triggerButton('RIGHT', dx > 10);
+    triggerButton('UP', dy < -16);
+    triggerButton('DOWN', dy > 16);
+}
+
+function resetJoystick() {
+    joyTouchId = null;
+    analogX = 0;
+    joyKnob.classList.add('returning');
+    joyKnob.style.transform = `translate(0px, 0px)`;
+    triggerButton('LEFT', false);
+    triggerButton('RIGHT', false);
+    triggerButton('UP', false);
+    triggerButton('DOWN', false);
+}
+
+joyZone.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    sfx.init();
+    joyTouchId = e.pointerId;
+    joyZone.setPointerCapture(e.pointerId);
+    joyKnob.classList.remove('returning');
+    handleJoystickMove(e.clientX, e.clientY);
+});
+
+joyZone.addEventListener('pointermove', (e) => {
+    if (joyTouchId === e.pointerId) {
+        e.preventDefault();
+        handleJoystickMove(e.clientX, e.clientY);
+    }
+});
+
+joyZone.addEventListener('pointerup', (e) => {
+    if (joyTouchId === e.pointerId) resetJoystick();
+});
+joyZone.addEventListener('pointercancel', (e) => {
+    if (joyTouchId === e.pointerId) resetJoystick();
+});
+
+// 经典十字键升级：支持手指不抬起直接滑动切换方向，跟手不卡顿
+const dpadZone = document.getElementById('dpad-zone');
+let dpadActive = false;
+
+function handleDpadSlide(clientX, clientY) {
+    const rect = dpadZone.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = clientX - cx;
+    const dy = clientY - cy;
+
+    if (Math.hypot(dx, dy) < 8) {
+        ['UP', 'DOWN', 'LEFT', 'RIGHT'].forEach(k => triggerButton(k, false));
+        return;
+    }
+
+    triggerButton('LEFT', dx < -12);
+    triggerButton('RIGHT', dx > 12);
+    triggerButton('UP', dy < -14);
+    triggerButton('DOWN', dy > 14);
+}
+
+dpadZone.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    dpadActive = true;
+    dpadZone.setPointerCapture(e.pointerId);
+    handleDpadSlide(e.clientX, e.clientY);
+});
+dpadZone.addEventListener('pointermove', (e) => {
+    if (dpadActive) {
+        e.preventDefault();
+        handleDpadSlide(e.clientX, e.clientY);
+    }
+});
+const endDpad = () => {
+    dpadActive = false;
+    ['UP', 'DOWN', 'LEFT', 'RIGHT'].forEach(k => triggerButton(k, false));
+};
+dpadZone.addEventListener('pointerup', endDpad);
+dpadZone.addEventListener('pointercancel', endDpad);
+
+// 顶部操作模式切换（灵动摇杆 vs 经典十字键）
+let isJoystickMode = true;
+document.getElementById('toggle-ergo-btn').addEventListener('click', () => {
+    sfx.init();
+    sfx.playCoin();
+    isJoystickMode = !isJoystickMode;
+    const shell = document.getElementById('console-shell');
+    const ergoText = document.getElementById('ergo-text');
+    const ergoIcon = document.getElementById('ergo-icon');
+    const modeTag = document.getElementById('control-mode-tag');
+
+    if (isJoystickMode) {
+        joyZone.classList.remove('hidden');
+        dpadZone.classList.add('hidden');
+        shell.classList.add('ergo-mode');
+        ergoIcon.textContent = '🕹️';
+        ergoText.textContent = '操作: 灵动摇杆 (跟手)';
+        modeTag.textContent = 'JOYSTICK';
+    } else {
+        joyZone.classList.add('hidden');
+        dpadZone.classList.remove('hidden');
+        shell.classList.remove('ergo-mode');
+        ergoIcon.textContent = '➕';
+        ergoText.textContent = '操作: 滑动十字键';
+        modeTag.textContent = 'D-PAD';
+    }
+});
+
+// 顶部一键切换游戏按钮
+document.getElementById('switch-game-top').addEventListener('click', () => {
+    switchGame();
+});
+
+// 绑定电脑端键盘事件
+const keyMap = {
+    'ArrowUp': 'UP', 'KeyW': 'UP',
+    'ArrowDown': 'DOWN', 'KeyS': 'DOWN',
+    'ArrowLeft': 'LEFT', 'KeyA': 'LEFT',
+    'ArrowRight': 'RIGHT', 'KeyD': 'RIGHT',
+    'KeyJ': 'A', 'KeyZ': 'A', 'Space': 'A',
+    'KeyK': 'B', 'KeyX': 'B', 'ShiftLeft': 'B', 'ShiftRight': 'B',
+    'Enter': 'START',
+    'KeyM': 'SELECT',
+    'KeyG': 'GAME', 'Tab': 'GAME'
+};
+
+window.addEventListener('keydown', (e) => {
+    const mapped = keyMap[e.code];
+    if (mapped) {
+        e.preventDefault();
+        triggerButton(mapped, true);
+    }
+});
+
+window.addEventListener('keyup', (e) => {
+    const mapped = keyMap[e.code];
+    if (mapped) {
+        e.preventDefault();
+        triggerButton(mapped, false);
+    }
+});
+
+// 启动游戏机
+requestAnimationFrame(loop);
 
 </script>
 </body></html>
